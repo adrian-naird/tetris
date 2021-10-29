@@ -2,7 +2,7 @@ import { ServerField } from "../ServerTetris/ServerField.js";
 import { Stone } from "./Stone.js";
 
 // export class ClientBrick extends Phaser.Physics.Arcade.Group {
-    
+
 //     constructor(scene: Phaser.Scene, field: Field, id: number) {
 //         super(scene.physics.world, scene);
 
@@ -18,7 +18,7 @@ import { Stone } from "./Stone.js";
 //                     this.add(new Stone(field, id, x + xC, y + yC));
 //                 }
 //             }
-            
+
 //         }
 //     }
 // }

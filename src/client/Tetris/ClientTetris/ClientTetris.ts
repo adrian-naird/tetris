@@ -91,7 +91,7 @@ export class ClientTetris extends MessageScene {
         switch (serverMessage.type) {
             case "newField":
                 if (this.field != undefined) {
-                    console.log(this.givenNames);
+                    // console.log(this.givenNames);
                     switch (serverMessage.player.id) {
                         case this.ownData.id:
                             this.field.generateField(serverMessage.newField, 0);
@@ -146,9 +146,12 @@ export class ClientTetris extends MessageScene {
                 }
                 break;
             case "hostGone":
-
+                
                 break;
             case "playerWon":
+                break;
+            case "updateNext":
+                this.field.updateNextBricks(serverMessage.nextBricks);
                 break;
         }
     }

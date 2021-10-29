@@ -44,5 +44,5 @@ export class ScrollingLogos {
             this.logo3.setPosition(this.logo3.x, -452)
         }
     }
-    
+
 }

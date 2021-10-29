@@ -22,7 +22,7 @@ export class SmallBrick extends Phaser.Physics.Arcade.Group {
             camera = (<ClientTetris>this.field.scene).nextCam;
             camera.setZoom(0.6);
             camera.scrollX = left;
-            camera.scrollY = top-630;
+            camera.scrollY = top - 630;
         }
         switch (id) {
             case 1:
@@ -42,7 +42,7 @@ export class SmallBrick extends Phaser.Physics.Arcade.Group {
                     [false, true, true],
                     [false, false, true],
                 ];
-                this.left = left+25;
+                this.left = left + 25;
                 this.top = top;
                 break;
             case 3:

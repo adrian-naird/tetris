@@ -33,7 +33,7 @@ export type ClientMessageSendLine = {
 }
 
 
-export type ServerMessage = ServerMessageFriendJoins | ServerMessagePlayerWon | ServerMessageGameOver | ServerMessageNewLine | ServerMessageGone | ServerMessageNotification | ServerMessageJoiningFriend | ServerMessageCodeAssignment | ServerMessageNewField | ServerMessageUpdateHoldBrick;
+export type ServerMessage = ServerMessageUpdateNext | ServerMessageFriendJoins | ServerMessagePlayerWon | ServerMessageGameOver | ServerMessageNewLine | ServerMessageGone | ServerMessageNotification | ServerMessageJoiningFriend | ServerMessageCodeAssignment | ServerMessageNewField | ServerMessageUpdateHoldBrick;
 
 export type ServerMessageCodeAssignment = {
     type: "codeAssignment",
@@ -84,4 +84,9 @@ export type ServerMessageGameOver = {
 export type ServerMessagePlayerWon = {
     type: "playerWon",
     player: NameIDData
+}
+
+export type ServerMessageUpdateNext = {
+    type: "updateNext",
+    nextBricks: number[]
 }

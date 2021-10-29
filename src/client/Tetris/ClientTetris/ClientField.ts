@@ -5,7 +5,7 @@ import { SmallBrick } from "./SmallBrick.js";
 import { Stone } from "./Stone.js";
 export class ClientField {
 
-    stoneGroups: Phaser.Physics.Arcade.Group[]= [];
+    stoneGroups: Phaser.Physics.Arcade.Group[] = [];
     serverFieldLeft: number = 780;
     serverFieldTop: number = 180;
     holdBrick: SmallBrick;
@@ -15,7 +15,7 @@ export class ClientField {
     scene: ClientTetris;
     CamSet: boolean = false;
     Camera: Phaser.Cameras.Scene2D.Camera;
-    nextBricks:  Phaser.Physics.Arcade.Group;
+    nextBricks: SmallBrick[] = [];
     constructor(scene: ClientTetris) {
         this.scene = scene;
         for (let i = 0; i < 5; i++) {
@@ -33,7 +33,7 @@ export class ClientField {
         this.cursors.down.on("down", () => { this.sendKeyMessage("Dd") })
         this.cursors.down.on("up", () => { this.sendKeyMessage("Du") })
         this.hKey.on("up", () => { this.sendKeyMessage("H") })
-        this.updateNextBricks([1,2,3,4,5]);
+        // this.updateNextBricks([1, 2, 3, 4, 5]);
     }
 
     sendKeyMessage(key: string) {
@@ -44,36 +44,36 @@ export class ClientField {
         this.scene.webSocketController.send(message);
     }
 
-    generateField(fieldArray: number[][],pos: number) {
-        if(!this.CamSet){
+    generateField(fieldArray: number[][], pos: number) {
+        if (!this.CamSet) {
             this.Camera = (<ClientTetris>this.scene).gameCams[pos];
             this.CamSet = true;
         }
         let yOffset = 0;
         let xOffset;
-        switch(pos){
+        switch (pos) {
             case 0:
-            xOffset= 780;
-            yOffset = 180;
-            break;
+                xOffset = 780;
+                yOffset = 180;
+                break;
             case 1:
                 xOffset = -4000;
-            break;
+                break;
             case 2:
-                xOffset = -3000; 
-            break;
+                xOffset = -3000;
+                break;
             case 3:
-                xOffset = -2000; 
-            break;
+                xOffset = -2000;
+                break;
             case 4:
                 xOffset = -1000;
-            break;
+                break;
         }
         this.destroy(pos);
         for (let y = 1; y < fieldArray[1].length - 1; y++) {
             for (let x = 1; x < fieldArray.length - 1; x++) {
                 if (fieldArray[x][y] != 0 && fieldArray[x][y] != -1) {
-                    this.stoneGroups[pos].add(new Stone(this, fieldArray[x][y], x - 1, y - 5,xOffset,yOffset));
+                    this.stoneGroups[pos].add(new Stone(this, fieldArray[x][y], x - 1, y - 5, xOffset, yOffset));
                 }
             }
         }
@@ -83,19 +83,18 @@ export class ClientField {
         if (this.holdBrick != null) {
             this.holdBrick.destroy(true);
         }
-        this.holdBrick = new SmallBrick(this, holdId, 3000, 0,"HOLD");
+        this.holdBrick = new SmallBrick(this, holdId, 3000, 0, "HOLD");
     }
-    updateNextBricks(array: number[]){
-        array.forEach((brickId,index)=>{
-            let smallBrick = new SmallBrick(this,brickId,-5500,index*163,"NEXT")
-        })
+    updateNextBricks(array: number[]) {
+        for (let i = 0; i < 3; i++) { this.nextBricks.forEach(e => e.getChildren().forEach(e => e.destroy())); }
+        array.forEach((brickId, index) => { this.nextBricks.push(new SmallBrick(this, brickId, -5500, index * 163, "NEXT")) })
     }
     destroy(pos: number) {
         this.stoneGroups[pos].clear(true, true);
     }
 
-    gameOver(pos: number){
-        
+    gameOver(pos: number) {
+
     }
 
 }

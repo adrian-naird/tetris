@@ -73,17 +73,17 @@ export class Brick {
 
                 ]
                 break;
-                // case 8:
-                // this.stones = [
-                //     [false, true, false,true,true],
-                //     [true, true, false,true,true],
-                //     [false, true, true,true,true],
-                //     [false, true, false,true,true],
-                //     [false, true, false,true,true],
+            // case 8:
+            // this.stones = [
+            //     [false, true, false,true,true],
+            //     [true, true, false,true,true],
+            //     [false, true, true,true,true],
+            //     [false, true, false,true,true],
+            //     [false, true, false,true,true],
 
 
-                // ]
-                // break;
+            // ]
+            // break;
 
         }
 
@@ -205,7 +205,7 @@ export class Brick {
                     this.moveRight();
                     this.rlcounter = 0;
                 }
-            } 
+            }
 
             if (this.down) {
                 if (this.downCounter > 5) {
@@ -295,5 +295,5 @@ export class Brick {
         this.updateBoolean = false;
         this.field.brick = null;
     }
-    
+
 }

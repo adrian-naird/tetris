@@ -1,6 +1,6 @@
 import { Brick } from "./ServerBrick";
 import * as ws from 'ws';
-import { ServerMessageGameOver, ServerMessageNewField, ServerMessageNewLine, ServerMessageUpdateHoldBrick } from "../../../Messages.js";
+import { ServerMessageGameOver, ServerMessageNewField, ServerMessageNewLine, ServerMessageUpdateHoldBrick, ServerMessageUpdateNext } from "../../../Messages.js";
 import { MainServer } from "../../../server/Server";
 import { ClientData } from "../../../server/Server";
 
@@ -83,12 +83,16 @@ export class ServerField {
         this.clientData.socket.send(JSON.stringify(suhb));
     }
     updateNextBricks(){
-        let array = this.nextBricksArray.slice(0,6);
+        let array = this.nextBricksArray.slice(0,5);
         this.sendUpdateNextBricksMessage(array);
     }
 
     sendUpdateNextBricksMessage(array: number[]) {
-        
+        let smu: ServerMessageUpdateNext = {
+            type: "updateNext",
+            nextBricks: array
+        }
+        this.clientData.socket.send(JSON.stringify(smu))
     }
     createCurrentFieldArray(): number[][] {
         let fieldX: number;
@@ -146,13 +150,14 @@ export class ServerField {
 
     gameOver() {
         this.gameNotOver=false;
-        this.server.checkIfWon(this.clientData)
         let snl: ServerMessageGameOver = {
             type: "gameOver",
             player: this.server.nameIDDatafy(this.clientData)
         };
         this.clientData.socket.send(JSON.stringify(snl));
         this.server.sendToMembers(snl, this.clientData);
+        this.server.checkIfWon(this.clientData)
+        // this.brick.updateBoolean=false;
     }
     
     addBrickToFieldArray() {
