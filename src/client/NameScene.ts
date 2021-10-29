@@ -1,5 +1,5 @@
 export class NameScene extends Phaser.Scene {
-
+    
     constructor() {
         super({
             key: "NameScene"

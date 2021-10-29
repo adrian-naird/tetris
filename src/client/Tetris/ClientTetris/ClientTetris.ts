@@ -20,6 +20,7 @@ export class ClientTetris extends MessageScene {
     gameCams: Phaser.Cameras.Scene2D.Camera[] = [];
     fullrows: FullRow[] = [];
     nextCam: Phaser.Cameras.Scene2D.Camera;
+    logos: ScrollingLogos;
 
     constructor() {
         super({
@@ -33,7 +34,7 @@ export class ClientTetris extends MessageScene {
         this.webSocketController = data.webSocket;
         this.webSocketController.changeScene(this);
     }
-    
+
     preload(): void {
         this.load.image('ScrollingLogo', 'assets/graphics/ScrollingLogo.png')
         this.load.image('tetrisfelder', 'assets/graphics/tetrisfelder.png');
@@ -55,18 +56,15 @@ export class ClientTetris extends MessageScene {
         this.field = new ClientField(this);
         this.givenNames.forEach((e, i) => this.names[i].setText(e.name));
         // this.givenNames.forEach((e, i) => this.sideFields.push(new ClientField(this)));
-        let l = new ScrollingLogos(this);
+        this.logos = new ScrollingLogos(this);
         // l.logo1.setDepth(50)
         // l.logo2.setDepth(50)
         // l.logo3.setDepth(50)
         // new FullRow(this.field,0,10,1);
-        
-        
-        this.add.existing(new Phaser.GameObjects.Rectangle(this, 40-4000, 294, 270,540, 0xffffff, 0.5).setOrigin(0,0).setBlendMode(Phaser.BlendModes.SATURATION).setDepth(1000))
-        // this.add.existing(new Phaser.GameObjects.Rectangle(this, 40, 294, 270,540, 0x9e2b48).setOrigin(0,0).setBlendMode(Phaser.BlendModes.OVERLAY).setDepth(1000))
+
     }
-    
-    
+
+
     camManagement() {
         // Scrollendes Logo Kamera
         this.logoCam = this.cameras.add(672, 318, 100, 582).setOrigin(0, 0).setScroll(-100, 0);
@@ -89,11 +87,19 @@ export class ClientTetris extends MessageScene {
         // this.holdCam.setBackgroundColor('rgba(0, 0, 85, 1)');
     }
 
+    makeRed(x: number, w: number) {
+        this.add.existing(new Phaser.GameObjects.Rectangle(this, x, 0, w, 2000, 0xffffff)
+            .setOrigin(0, 0).setBlendMode(Phaser.BlendModes.SATURATION).setDepth(1000));
+        this.add.existing(new Phaser.GameObjects.Rectangle(this, x, 0, w, 2000, 0x5e5e5e, 0.6)
+            .setOrigin(0, 0).setBlendMode(Phaser.BlendModes.DARKEN).setDepth(1000));
+        this.add.existing(new Phaser.GameObjects.Rectangle(this, x, 0, w, 2000, 0x9e2b48)
+            .setOrigin(0, 0).setBlendMode(Phaser.BlendModes.OVERLAY).setDepth(1000));
+    }
+
     onMessage(serverMessage: ServerMessage) {
         switch (serverMessage.type) {
             case "newField":
                 if (this.field != undefined) {
-                    // console.log(this.givenNames);
                     switch (serverMessage.player.id) {
                         case this.ownData.id:
                             this.field.generateField(serverMessage.newField, 0);
@@ -126,24 +132,32 @@ export class ClientTetris extends MessageScene {
             case "playerGone":
                 switch (serverMessage.player.id) {
                     case this.ownData.id:
-                        console.log("gameover")
                         this.field.gameOver(0);
+                        this.makeRed(650, 630)
+                        this.makeRed(-5500, 1200)
+                        this.makeRed(-100, 100)
+                        this.makeRed(3000, 1000)
+                        this.logos.scene.events.removeAllListeners();
                         break;
                     case this.givenNames[0].id:
                         this.field.gameOver(1);
                         this.names[0].setColor('rgba(152, 37, 67, 1)')
+                        this.makeRed(-4000, 375)
                         break;
                     case this.givenNames[1].id:
                         this.field.gameOver(2);
                         this.names[1].setColor('rgba(152, 37, 67, 1)')
+                        this.makeRed(-4000 + 355, 375)
                         break;
                     case this.givenNames[2].id:
                         this.field.gameOver(3);
                         this.names[2].setColor('rgba(152, 37, 67, 1)')
+                        this.makeRed(-4000 + 1295, 375)
                         break;
                     case this.givenNames[3].id:
                         this.field.gameOver(4);
                         this.names[3].setColor('rgba(152, 37, 67, 1)')
+                        this.makeRed(-4000 + 1610, 375)
                         break;
                 }
                 break;

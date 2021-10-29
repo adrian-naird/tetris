@@ -15,29 +15,34 @@ export class LobbyScene extends MessageScene {
         });
     }
 
-    host: boolean = false;
     ownData: NameIDData;
     otherPlayers: NameIDData[] = [];
     boxes: Boxes;
     codeInputDOM: Phaser.GameObjects.DOMElement;
     blackGaps: Phaser.GameObjects.DOMElement[];
-    inputText: any;
     isAlreadyChecked: boolean = false;
     largeText: Phaser.GameObjects.Text;
-    logoVertical: Phaser.GameObjects.Sprite;
     name: string;
     code: number;
     webSocketController: WebSocketController;
     webSocketReady: boolean = false;
     stopUpdating: boolean = false;
     first: boolean = true;
+
     textSize: number = 1;
     scaler: boolean = true;
 
+    /**
+     * Wird als aller erstes ausgeführt, nimmt erstmal den Namen von der NameScene an
+     * @param data die Daten (der eingegebene Name)
+     */
     init(data) {
         this.name = data.givingName;
     }
 
+    /**
+     * Wird nach init() ausgefüht, und lädt erstmal alle nötigen Dateien
+     */
     preload(): void {
         this.load.css('main', 'css/main.css');
         this.load.image('pointer', 'assets/sprites/pointer.cur');
@@ -46,6 +51,9 @@ export class LobbyScene extends MessageScene {
         this.load.html('BlackGap', 'assets/text/BlackGap.html');
     }
 
+    /**
+     * Baut die Scene mit allen nötigen Elementen auf
+     */
     create(): void {
         this.codeInputDOM = this.add.dom(359, 542).createFromCache('codeInput');
 
@@ -60,8 +68,7 @@ export class LobbyScene extends MessageScene {
         this.largeText = new Phaser.GameObjects.Text(this, 1920 / 2, 890, "JOIN OR HOST A GAME", { fontFamily: 'daydream-webfont', fontSize: "72px", color: "white" }).setOrigin(0.5, 0);
         this.add.existing(this.largeText);
 
-        this.logoVertical = new Phaser.GameObjects.Sprite(this, 234, 540, 'logovertical');
-        this.add.existing(this.logoVertical);
+        this.add.existing(new Phaser.GameObjects.Sprite(this, 234, 540, 'logovertical'));
 
         this.boxes = new Boxes(this);
 
@@ -69,21 +76,20 @@ export class LobbyScene extends MessageScene {
     }
 
     /**
-     * Überprüft den Inhalt der Inputbox un
+     * Wird bei jedem game step aufgerufen und prüft jedes mal den Inhalt der Inputbox und skaliert den Text
      * @param time 
      * @param delta 
      */
     update(time: number, delta: number): void {
         if (!this.stopUpdating) {
-            this.inputText = this.codeInputDOM.getChildByName('codeInput');
+            let inputText: any = this.codeInputDOM.getChildByName('codeInput');
 
-            if (this.inputText.value.length == 4 && this.inputText.value != this.code) {
+            if (inputText.value.length == 4 && inputText.value != this.code) {
                 if (this.isAlreadyChecked == false) {
                     let message: ClientMessageJoinFriend = {
                         type: "joinFriend",
-                        newCode: this.inputText.value
+                        newCode: inputText.value
                     }
-                    this.host = true;
                     this.webSocketController.send(message);
                     this.isAlreadyChecked = true;
                 }
@@ -120,7 +126,7 @@ export class LobbyScene extends MessageScene {
                 this.code = serverMessage.code;
                 break;
             case "friendJoins":
-                if (this.first && !this.host) {
+                if (this.first) {
                     this.first = false;
                     this.largeText.setText("START GAME")
                     this.largeText.setInteractive();
@@ -134,7 +140,7 @@ export class LobbyScene extends MessageScene {
                     this.stopUpdating = true;
                     this.codeInputDOM.destroy();
                     this.blackGaps.forEach((e) => e.destroy());
-                    ["H", "O", "S", "T"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").setText(e));
+                    ["H", "O", "S", "T"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").text.setText(e));
                 }
 
                 for (let i = 0; i < 4; i++) {
@@ -152,7 +158,7 @@ export class LobbyScene extends MessageScene {
                 this.stopUpdating = true;
                 this.codeInputDOM.destroy();
                 this.blackGaps.forEach((e) => e.destroy());
-                ["G", "A", "M", "E"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").setText(e));
+                ["G", "A", "M", "E"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").text.setText(e));
                 this.boxes.changeCode(serverMessage.code);
                 this.boxes.newNames(serverMessage.newPlayers);
                 this.largeText.setText("WAIT FOR HOST TO START")
@@ -194,20 +200,7 @@ export class LobbyScene extends MessageScene {
     }
 
     /**
-     * Überprüft ob die eigene Runde voll ist
-     * @returns Die Anzahl der Mitspieler, 4 bedeutet es ist voll
-     */
-    isFull(): number {
-        for (let i = 0; i < 4; i++) {
-            if (this.otherPlayers[i] == null) {
-                return i;
-            }
-        }
-        return 4;
-    }
-
-    /**
-     * Sagt dem Server, dass der Websocket dieses Clients aktiv ist und schickt im den Namen
+     * Sagt dem Server, dass der Websocket dieses Clients aktiv ist und schickt ihm den Namen
      */
     onWebSocketReady() {
         let message: ClientMessageNewClient = {

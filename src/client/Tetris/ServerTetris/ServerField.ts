@@ -185,7 +185,6 @@ export class ServerField {
     newBrick() {
         setTimeout(() => {
             // Erstellen des neuen Steins
-            // if (this.brick == null) {
             if (this.lineHasBeenSent) {
                 this.addLineAtBottom();
                 this.lineHasBeenSent = false;
@@ -197,9 +196,6 @@ export class ServerField {
             }
             this.brick = new Brick(this, this.nextBricksArray.shift());
             this.updateNextBricks();
-            // console.log(this.nextBricksArray);
-
-            // }
         }, 500)
     }
 
@@ -284,7 +280,6 @@ export class ServerField {
 
     lineSent() {
         this.lineHasBeenSent = true;
-        console.log("lineSent");
     }
     addLineAtBottom() {
         for (let y = 0; y < 23; y++) {

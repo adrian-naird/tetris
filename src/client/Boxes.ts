@@ -32,9 +32,9 @@ export class Boxes {
      */
     updateNames() {
         if (this.nameList.length == 0) {
-            this.nameBoxes.forEach((e, i) => this.nameBoxes[i].setText(""))
+            this.nameBoxes.forEach((e, i) => this.nameBoxes[i].text.setText(""))
         }
-        this.nameList.forEach((e, i) => this.nameBoxes[i].setText(e))
+        this.nameList.forEach((e, i) => this.nameBoxes[i].text.setText(e))
     }
 
     /**
@@ -64,6 +64,6 @@ export class Boxes {
      * @param number neuer Code 
      */
     changeCode(number: number) {
-        this.ownCodeBoxes.forEach((e, i) => e.setText(String(number).charAt(i)));
+        this.ownCodeBoxes.forEach((e, i) => e.text.setText(String(number).charAt(i)));
     }
 }

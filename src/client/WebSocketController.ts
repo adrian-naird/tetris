@@ -7,6 +7,10 @@ export class WebSocketController {
     connection: WebSocket;
     scene: MessageScene;
 
+    /**
+     * Richtet den WebsocketController ein
+     * @param lobbyScene die Szene des Clients (immer LobbyScene)
+     */
     constructor(private lobbyScene: MessageScene) {
 
         this.scene = lobbyScene;
@@ -35,10 +39,17 @@ export class WebSocketController {
 
     }
 
+    /**
+     * Ändert die Szene, die der Client benutzt
+     * @param scene die neue Szene
+     */
     public changeScene(scene: MessageScene) {
         this.scene = scene;
     }
-
+    /**
+     * Versendet eine Nachricht des Clients an den Server
+     * @param message die Nachricht
+     */
     public send(message: ClientMessage) {
         this.connection.send(JSON.stringify(message));
     }

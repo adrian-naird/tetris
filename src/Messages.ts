@@ -1,7 +1,7 @@
 import { ServerField } from "./client/Tetris/ServerTetris/ServerField";
 import { NameIDData } from "./server/Server.js";
 
-// Clientnachrichten
+// die Clientnachrichten
 export type ClientMessage = ClientMessageSendLine | ClientMessageNewClient | ClientMessageLineDrag | ClientMessageJoinFriend | ClientMessageStartGame | ClientMessageKeyPressed;
 
 export type ClientMessageNewClient = {
@@ -32,7 +32,7 @@ export type ClientMessageSendLine = {
     player: NameIDData
 }
 
-
+// die Servernachrichten
 export type ServerMessage = ServerMessageUpdateNext | ServerMessageFriendJoins | ServerMessagePlayerWon | ServerMessageGameOver | ServerMessageNewLine | ServerMessageGone | ServerMessageNotification | ServerMessageJoiningFriend | ServerMessageCodeAssignment | ServerMessageNewField | ServerMessageUpdateHoldBrick;
 
 export type ServerMessageCodeAssignment = {

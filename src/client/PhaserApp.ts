@@ -5,7 +5,7 @@ import { ClientTetris } from "./Tetris/ClientTetris/ClientTetris.js";
 var config: Phaser.Types.Core.GameConfig = {
   width: 1920,
   height: 1080,
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   parent: 'game',
   scene: [NameScene, LobbyScene, ClientTetris],
   scale: {

@@ -13,6 +13,7 @@ import {
 import { ServerField } from '../client/Tetris/ServerTetris/ServerField';
 
 export type ClientData = {
+    //ClientData: Ein type mit allen Informationen die der Server von einem Spieler gerne wissen möchte
     socket: ws,
     id: number,
     name: string,
@@ -22,11 +23,16 @@ export type ClientData = {
 }
 
 export type NameIDData = {
+    /*
+    NameIDData: Ein type mit allen Informationen die ein Client über (Mit-)Spieler gerne wissen möchte,
+    um diese Informationen über messages an einen Client zu geben
+    */
     id: number,
     name: string
 }
 
 type round = {
+    //round: Ein type mit den wichtigen Informationen jeder Spielrunde
     code: number,
     memberList: ClientData[],
     inMatch: boolean
@@ -35,18 +41,14 @@ export class MainServer {
 
     expressApp: express.Express = express();
     wsServer: ws.Server;
-
     clients: ClientData[] = [];
     temp4PlayerList: ClientData[];
-    // tempCode: number;
     rounds: round[] = [];
-
-    // codeToMemberListMap: Map<number, ClientData[]> = new Map();
-    // clientDataToCodeMap: Map<ClientData, number> = new Map();
     socketToClientDataMap: Map<ws, ClientData> = new Map();
-    // codes: number[] = [];
-    // clientDataToFieldMap: Map<ClientData, ServerField> = new Map();
 
+    /**
+     * Richtet den Express-Server und die Websocket Verbindung ein
+     */
     constructor() {
         this.expressApp.use(serveStatic('./htdocs/'));
         const server = this.expressApp.listen(5600);
@@ -66,8 +68,7 @@ export class MainServer {
             });
         });
 
-
-        // Verdrahten der WebSocket-Ereignishandler
+        // hier werden die Websocket Eventhandler eingesetzt
         that.wsServer.on('connection', (socketClient: ws) => {
 
             socketClient.on('message', (message: ws.Data) => {
@@ -80,6 +81,11 @@ export class MainServer {
         })
     }
 
+    /**
+     * Macht eine ClientData zu einer NameIDData
+     * @param clientData die ClientData
+     * @returns die neue NameIDData
+     */
     nameIDDatafy(clientData: ClientData): NameIDData {
         return {
             id: clientData.id,
@@ -87,28 +93,26 @@ export class MainServer {
         }
     }
 
+
     /**
-     * Schickt die Nachricht den Mitspielern eines Spielers
-     * @param ignoredClientSocket der (ignorierte) Spieler
-     * @param message Nachricht, die die Mitspieler erhalten sollen
+     * Sendet eine Message den Mitspielern eines Clients
+     * @param message die Nachricht
+     * @param clientData der Client
      */
     sendToMembers(message: ServerMessage, clientData: ClientData) {
-        for (let client of this.getRound(clientData.code).memberList) {
-            if (client.socket != clientData.socket) {
-                client.socket.send(JSON.stringify(message));
+        let round = this.rounds.find(e => { return e.code == clientData.code });
+        if (round != undefined) {
+            for (let client of round.memberList) {
+                if (client.socket != clientData.socket) {
+                    client.socket.send(JSON.stringify(message));
+                }
             }
         }
     }
 
-    getRound(code: number) {
-        let round: round;
-        this.rounds.some(e => { round = e; e.code == code })
-        return round;
-    }
-
     /**
-     * Beantwortung aller Nachrichten des Clients an den Server.
-     * @param messagerSocket Websocket des Adressanten der Message
+     * Beantwortung aller Nachrichten von Clients an den Server
+     * @param messagerSocket Websocket des Absenders der Message
      * @param messageJson die Nachricht 
      */
     onWebSocketClientMessage(messagerSocket: ws, messageJson: ws.Data) {
@@ -141,11 +145,10 @@ export class MainServer {
 
                 break;
             case "joinFriend":
-                //Sag dem Freund, dass er joint. Sag ihm die Namen seiner neuen Mitspieler.
                 let JoinerData: ClientData = this.socketToClientDataMap.get(messagerSocket);
-                let newCode: number = message.newCode;
-                let joiningRound: round = this.getRound(newCode);
-                console.log(joiningRound);
+                let newCode: number = +message.newCode;
+                let joiningRound: round = this.rounds.find(e => { return e.code == newCode });
+                
                 if (!this.rounds.some(e => e.code == newCode)) {
                     let sce: ServerMessageNotification = {
                         type: "codeError"
@@ -192,10 +195,9 @@ export class MainServer {
             case "startGame":
                 let starterData: ClientData = this.socketToClientDataMap.get(messagerSocket);
                 let startedCode: number = starterData.code
-                let startedRound: round = this.getRound(startedCode)
+                let startedRound: round = this.rounds.find(e => { return e.code == startedCode })
                 let memberList: ClientData[] = startedRound.memberList;
-                // joiningRound.inMatch = true;
-                let fields: ServerField[];
+
                 memberList.forEach(e => e.field = new ServerField(e, this));
                 let shs: ServerMessageNotification = {
                     type: "hostStartsTheGame",
@@ -239,19 +241,22 @@ export class MainServer {
                 break;
             case "sendLine":
                 let id = message.player.id;
-                this.clients.forEach(e => {
-
-                    if (e.id == id) {
-                        e.field.lineSent();
-                    }
-                })
+                this.clients.forEach(e => { if (e.id == id) { e.field.lineSent() } });
                 break;
         }
     }
 
+    /**
+     * Überprüft, ob der Spieler seine Runde gewonnen hat
+     * @param player der Spieler
+     */
     checkIfWon(player: ClientData) {
+        /*
+        Überprüfung des GameOver-Statuses jedes Spielers der Runde,
+        und falls alle bereits verloren haben sollten, ist der player der letzte "Verlierer" und gewinnt somit
+        */
         let overs: boolean[] = [];
-        this.getRound(player.code).memberList.forEach(e => overs.push(e.field.gameNotOver));
+        this.rounds.find(e => { return e.code == player.code }).memberList.forEach(e => overs.push(e.field.gameNotOver));
         if (overs.every(e => e)) {
             let smn: ServerMessagePlayerWon = {
                 type: "playerWon",
@@ -261,7 +266,10 @@ export class MainServer {
             this.sendToMembers(smn, player)
         }
     }
-
+    /**
+     * Generiert einen zufälligen einzigartigen 4-stelligen Zahlencode
+     * @returns der Code
+     */
     generateCode(): number {
         let clientCode: number = Math.floor(1000 + Math.random() * 9000);
         if (this.rounds.some(e => e.code == clientCode)) {
@@ -276,7 +284,7 @@ export class MainServer {
      */
     onWebSocketClientClosed(clientSocket: ws) {
         let clientData: ClientData = this.socketToClientDataMap.get(clientSocket);
-        let round = this.getRound(clientData.code)
+        let round = this.rounds.find(e => { return e.code == clientData.code })
         // let clientData3Code: number = clientData3.code;
         let goneMessage: ServerMessage;
         let shg: ServerMessageGone = {
@@ -300,9 +308,9 @@ export class MainServer {
         this.sendToMembers(goneMessage, clientData);
 
         this.socketToClientDataMap.delete(clientSocket);
-        let newMemberList2: ClientData[] = this.getRound(clientData.code).memberList
+        let newMemberList2: ClientData[] = this.rounds.find(e => { return e.code == clientData.code }).memberList
         newMemberList2.splice(newMemberList2.indexOf(clientData), 1);
-        this.getRound(clientData.code).memberList = newMemberList2
+        this.rounds.find(e => { return e.code == clientData.code }).memberList = newMemberList2
     }
 }
 

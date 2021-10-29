@@ -2,6 +2,7 @@ export class Logo extends Phaser.Physics.Arcade.Sprite {
     constructor(scene: Phaser.Scene, y: number) {
         super(scene, -100, y, "ScrollingLogo")
         this.setOrigin(0, 0)
+        this.setDepth(700);
         scene.add.existing(this);
         //722,318
         //672,318
@@ -14,7 +15,7 @@ export class ScrollingLogos {
     public logo2: Logo;
     public logo3: Logo;
 
-    scene: Phaser.Scene
+    scene: Phaser.Scene;
     logos: Phaser.Physics.Arcade.Group;
 
     constructor(scene: Phaser.Scene) {
@@ -30,7 +31,7 @@ export class ScrollingLogos {
         this.logo3 = new Logo(scene, -452);
         this.logos.addMultiple([this.logo1, this.logo2, this.logo3]);
     }
-
+    
     update(time: number, delta: number) {
         this.logos.incY(1);
 

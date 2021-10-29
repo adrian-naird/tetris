@@ -101,7 +101,7 @@ export class SmallBrick extends Phaser.Physics.Arcade.Group {
         for (let x = 0; x < stones.length; x++) {
             for (let y = 0; y < stones.length; y++) {
                 if (stones[x][y]) {
-                    let stone = new Phaser.Physics.Arcade.Sprite(this.field.scene, (x * 36) + left, (y * 36) + top, 'tetrominos', 'Tetromino_' + this.id.toString());
+                    let stone = new Phaser.Physics.Arcade.Sprite(this.field.scene, (x * 36) + left, (y * 36) + top, 'tetrominos', 'Tetromino_' + this.id.toString()).setDepth(800);
                     (<ClientTetris>this.field.scene).gameCams[4].ignore(stone);
                     // (<ClientTetris>this.field.scene).cameras.main.ignore(stone);
                     this.add(stone);
