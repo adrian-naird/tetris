@@ -156,7 +156,7 @@ export class ServerField {
         };
         this.clientData.socket.send(JSON.stringify(snl));
         this.server.sendToMembers(snl, this.clientData);
-        this.server.checkIfWon(this.clientData)
+        // this.server.checkIfWon(this.clientData)
         // this.brick.updateBoolean=false;
     }
     

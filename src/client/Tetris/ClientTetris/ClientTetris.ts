@@ -33,7 +33,7 @@ export class ClientTetris extends MessageScene {
         this.webSocketController = data.webSocket;
         this.webSocketController.changeScene(this);
     }
-
+    
     preload(): void {
         this.load.image('ScrollingLogo', 'assets/graphics/ScrollingLogo.png')
         this.load.image('tetrisfelder', 'assets/graphics/tetrisfelder.png');
@@ -60,11 +60,13 @@ export class ClientTetris extends MessageScene {
         // l.logo2.setDepth(50)
         // l.logo3.setDepth(50)
         // new FullRow(this.field,0,10,1);
-
-
+        
+        
+        this.add.existing(new Phaser.GameObjects.Rectangle(this, 40-4000, 294, 270,540, 0xffffff, 0.5).setOrigin(0,0).setBlendMode(Phaser.BlendModes.SATURATION).setDepth(1000))
+        // this.add.existing(new Phaser.GameObjects.Rectangle(this, 40, 294, 270,540, 0x9e2b48).setOrigin(0,0).setBlendMode(Phaser.BlendModes.OVERLAY).setDepth(1000))
     }
-
-
+    
+    
     camManagement() {
         // Scrollendes Logo Kamera
         this.logoCam = this.cameras.add(672, 318, 100, 582).setOrigin(0, 0).setScroll(-100, 0);
@@ -146,7 +148,7 @@ export class ClientTetris extends MessageScene {
                 }
                 break;
             case "hostGone":
-                
+
                 break;
             case "playerWon":
                 break;
