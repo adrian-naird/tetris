@@ -1,0 +1,196 @@
+{
+  "frames": {
+    "Tetromino_1": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "Tetromino_2": {
+      "frame": {
+        "x": 36,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "Tetromino_3": {
+      "frame": {
+        "x": 72,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "Tetromino_4": {
+      "frame": {
+        "x": 108,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "Tetromino_5": {
+      "frame": {
+        "x": 144,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "Tetromino_6": {
+      "frame": {
+        "x": 180,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "Tetromino_7": {
+      "frame": {
+        "x": 216,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "Tetromino_8": {
+      "frame": {
+        "x": 252,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  }
+}

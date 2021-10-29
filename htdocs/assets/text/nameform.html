@@ -1,0 +1,20 @@
+<link rel='stylesheet' type="text/css" href="css/main.css" media="screen" />
+<style>
+    input[type=text] {
+        width: 1186px;
+        border: 0px;
+        margin: 0;
+        outline: none;
+        height: 118px;
+        box-sizing: content-box;
+        font-size: 110px;
+        font-family: lilian-webfont;
+        padding-left: 20px;
+        caret-color: white;
+    }
+</style>
+
+<body>
+    <input type="text" name="nameField" placeholder="Your Name!" autocomplete="off" spellcheck="false" maxlength="19"
+        onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 48 && event.charCode <= 57)">
+</body>

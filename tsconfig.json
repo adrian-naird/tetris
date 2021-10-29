@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "outDir": "./htdocs/js",
+        "sourceMap": true,
+        "inlineSources": true,
+        "types": [
+            "phaser",
+            "jquery"
+        ],
+        "typeRoots": [
+            "./node_modules/phaser/types"
+        ],
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}
