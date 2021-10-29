@@ -18,6 +18,7 @@ export class ServerField {
     lineHasBeenSent: boolean = false;
     gameNotOver: boolean = true;
     nextBricksArray: number[] = [];
+    firstBrick: boolean = true;
     
     
 
@@ -33,7 +34,6 @@ export class ServerField {
 
         // this.brick = new Brick(this, Math.ceil(Math.random() * 7));
         this.brick = new Brick(this,this.nextBricksArray.shift());
-        this.updateNextBricks();
         // this.brick = new Brick(this, 2);
 
     }
@@ -284,7 +284,7 @@ export class ServerField {
 
     lineSent() {
         this.lineHasBeenSent = true;
-        console.log("lineSent");
+        // console.log("lineSent");
     }
     addLineAtBottom() {
         for (let y = 0; y < 23; y++) {

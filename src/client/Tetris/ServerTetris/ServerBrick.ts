@@ -19,6 +19,7 @@ export class Brick {
         this.xC = 4;
         this.yC = -3;
         this.updateBoolean = true;
+       
         switch (id) {
             case 1:
                 this.stones = [
@@ -84,7 +85,6 @@ export class Brick {
 
             // ]
             // break;
-
         }
 
         this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());

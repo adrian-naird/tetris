@@ -42,7 +42,7 @@ export class SmallBrick extends Phaser.Physics.Arcade.Group {
                     [false, true, true],
                     [false, false, true],
                 ];
-                this.left = left + 25;
+                this.left = left + 28;
                 this.top = top;
                 break;
             case 3:
