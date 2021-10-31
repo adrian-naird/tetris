@@ -196,6 +196,7 @@ export class MainServer {
                 let starterData: ClientData = this.socketToClientDataMap.get(messagerSocket);
                 let startedCode: number = starterData.code
                 let startedRound: round = this.rounds.find(e => { return e.code == startedCode })
+                startedRound.inMatch=true;
                 let memberList: ClientData[] = startedRound.memberList;
 
                 memberList.forEach(e => e.field = new ServerField(e, this));
@@ -256,7 +257,8 @@ export class MainServer {
         und falls alle bereits verloren haben sollten, ist der player der letzte "Verlierer" und gewinnt somit
         */
         let overs: boolean[] = [];
-        this.rounds.find(e => { return e.code == player.code }).memberList.forEach(e => overs.push(e.field.gameNotOver));
+        let round = this.rounds.find(e => { return e.code == player.code })
+        round.memberList.forEach(e => overs.push(e.field.gameNotOver));
         if (overs.every(e => !e)) {
             let smn: ServerMessagePlayerWon = {
                 type: "playerWon",
@@ -264,6 +266,8 @@ export class MainServer {
             }
             player.socket.send(JSON.stringify(smn))
             this.sendToMembers(smn, player)
+            round.inMatch=false;
+            round.memberList.forEach(e => e.field==null)
         }
     }
 
@@ -285,10 +289,10 @@ export class MainServer {
      */
     onWebSocketClientClosed(clientSocket: ws) {
         let clientData: ClientData = this.socketToClientDataMap.get(clientSocket);
+        console.log(this.rounds);
         let round = this.rounds.find(e => { return e.code == clientData.code })
-        console.log(round)
-        // let clientData3Code: number = clientData3.code;
         let goneMessage: ServerMessage;
+
         let shg: ServerMessageGone = {
             type: "hostGone",
             player: this.nameIDDatafy(clientData),
@@ -298,21 +302,18 @@ export class MainServer {
             player: this.nameIDDatafy(clientData),
         }
         if (clientData.host) {
-            let index: number = this.rounds.indexOf(round, 0);
-            if (index > -1) {
-                this.rounds.splice(index, 1);
-            }
+            // let index: number = this.rounds.indexOf(round, 0);
+            // if (index > -1) {
+            //     this.rounds.splice(index, 1);
+            // }
             goneMessage = shg;
         } else {
             goneMessage = spg;
         }
 
         this.sendToMembers(goneMessage, clientData);
-
         this.socketToClientDataMap.delete(clientSocket);
-        let newMemberList2: ClientData[] = round.memberList
-        newMemberList2.splice(newMemberList2.indexOf(clientData), 1);
-        round.memberList = newMemberList2
+        round.memberList.splice(round.memberList.indexOf(clientData), 1);
     }
 }
 

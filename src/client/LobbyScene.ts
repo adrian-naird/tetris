@@ -89,10 +89,13 @@ export class LobbyScene extends MessageScene {
             this.otherPlayers = [];
             this.webSocketController = new WebSocketController(this);
         } else {
+            this.webSocketController.scene=this;
             this.boxes.newNames(this.otherPlayers);
             this.boxes.changeCode(this.lobbyInfo.code);
             if(this.lobbyInfo.host){
                 this.makeHost();
+            }else{
+                this.makeMember(this.lobbyInfo.code, this.otherPlayers)
             }
         }
     }
@@ -148,7 +151,7 @@ export class LobbyScene extends MessageScene {
                 this.lobbyInfo = { host: true, code: serverMessage.code };
                 break;
             case "friendJoins":
-                if (this.first) {
+                if (this.first&& this.lobbyInfo.host) {
                     this.first = false;
                     this.makeHost();
                 }
@@ -166,13 +169,7 @@ export class LobbyScene extends MessageScene {
                     this.largeText.input.enabled = false;
                 }
                 this.otherPlayers = serverMessage.newPlayers;
-                this.stopUpdating = true;
-                this.codeInputDOM.destroy();
-                this.blackGaps.forEach((e) => e.destroy());
-                ["G", "A", "M", "E"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").text.setText(e));
-                this.boxes.changeCode(serverMessage.code);
-                this.boxes.newNames(serverMessage.newPlayers);
-                this.largeText.setText("WAIT FOR HOST TO START")
+                this.makeMember(serverMessage.code, serverMessage.newPlayers);
                 break;
             case "hostStartsTheGame":
                 this.startGame();
@@ -208,6 +205,16 @@ export class LobbyScene extends MessageScene {
                 this.largeText.setText("GAME IS RUNNING");
                 break;
         }
+    }
+
+    makeMember(code: number, newNames: NameIDData[]){
+        this.stopUpdating = true;
+                this.codeInputDOM.destroy();
+                this.blackGaps.forEach((e) => e.destroy());
+                ["G", "A", "M", "E"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").text.setText(e));
+                this.boxes.changeCode(code);
+                this.boxes.newNames(newNames);
+                this.largeText.setText("WAIT FOR HOST TO START")
     }
 
     makeHost(){

@@ -23,6 +23,7 @@ export class ClientTetris extends MessageScene {
     fullrows: FullRow[] = [];
     nextCam: Phaser.Cameras.Scene2D.Camera;
     logos: ScrollingLogos;
+    textCam: Phaser.Cameras.Scene2D.Camera
 
     largeText: Phaser.GameObjects.Text;
 
@@ -37,7 +38,7 @@ export class ClientTetris extends MessageScene {
         this.ownData = data.ownData;
         this.webSocketController = data.webSocket;
         this.webSocketController.changeScene(this);
-        this.lobbyInfo=data.lobbyInfo
+        this.lobbyInfo = data.lobbyInfo
     }
 
     preload(): void {
@@ -60,13 +61,8 @@ export class ClientTetris extends MessageScene {
         this.camManagement();
         this.field = new ClientField(this);
         this.givenNames.forEach((e, i) => this.names[i].setText(e.name));
-        // this.givenNames.forEach((e, i) => this.sideFields.push(new ClientField(this)));
         this.logos = new ScrollingLogos(this);
-        // l.logo1.setDepth(50)
-        // l.logo2.setDepth(50)
-        // l.logo3.setDepth(50)
-        // new FullRow(this.field,0,10,1);
-        this.largeText = new Phaser.GameObjects.Text(this, 1920 / 2, 450, "", { fontFamily: 'lilian-webfont', fontSize: "72px", color: "white" }).setOrigin(0.5, 0).setAlign("center").setDepth(1001);
+        this.largeText = new Phaser.GameObjects.Text(this, 1920 / 2, 100, "", { fontFamily: 'lilian-webfont', fontSize: "72px", color: "white" }).setOrigin(0.5, 0).setAlign("center").setDepth(1100);
         this.add.existing(this.largeText);
     }
 
@@ -76,9 +72,7 @@ export class ClientTetris extends MessageScene {
         this.logoCam = this.cameras.add(672, 318, 100, 582).setOrigin(0, 0).setScroll(-100, 0);
         this.logoCam.ignore(this.background);
 
-
         this.setGameCams();
-
 
         // hold Kamera
         this.holdCam = this.cameras.add(672, 198, 100, 112).setOrigin(0, 0).setScroll(-1000, 0);
@@ -88,9 +82,6 @@ export class ClientTetris extends MessageScene {
         // Position der NextCam stimmt noch nicht:
         this.nextCam = this.cameras.add(1148, 198, 100, 479).setOrigin(0, 0)
         this.nextCam.ignore(this.background);
-
-
-        // this.holdCam.setBackgroundColor('rgba(0, 0, 85, 1)');
     }
 
     makeRed(x: number, w: number) {
@@ -132,22 +123,23 @@ export class ClientTetris extends MessageScene {
                 this.fullrows.forEach(e => e.destroy());
                 this.fullrows = [];
                 serverMessage.lines.forEach(e => this.fullrows.push(new FullRow(this.field, e - 5)));
-                // this.fullrows.forEach(e => e.setDepth));
                 break;
             case "gameOver":
-                this.gameOverPerson(serverMessage.player)
+                this.gameOverPlayer(serverMessage.player)
                 break;
             case "playerGone":
-                this.gameOverPerson(serverMessage.player)
-                this.givenNames.splice(this.givenNames.findIndex(e=>e==serverMessage.player), 1)
+                this.gameOverPlayer(serverMessage.player)
+                this.givenNames.splice(this.givenNames.findIndex(e => e == serverMessage.player), 1)
                 break;
             case "hostGone":
                 this.largeText.setText("Host left the game")
+                this.textCam = this.cameras.add(1920/2-450, 450, 900, 200).setOrigin(0.5, 0).setScroll(0, -350).setBackgroundColor('rgba(152, 37, 67, 1)');
                 this.scene.stop("ClientTetris");
                 break;
             case "playerWon":
-                this.largeText.setText(serverMessage.player.name+" has won!")
-                setTimeout(e => this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }), 5000)
+                this.largeText.setText(serverMessage.player.name + " has won!")
+                this.textCam = this.cameras.add(1920/2-450, 450, 900, 200).setOrigin(0.5, 0).setScroll(0, -350).setBackgroundColor('rgba(152, 37, 67, 1)');
+                setTimeout(e =>{this.scene.stop("ClientTetris"); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData })}, 5000)
                 break;
             case "updateNext":
                 this.field.updateNextBricks(serverMessage.nextBricks);
@@ -155,7 +147,7 @@ export class ClientTetris extends MessageScene {
         }
     }
 
-    gameOverPerson(player: NameIDData) {
+    gameOverPlayer(player: NameIDData) {
         switch (player.id) {
             case this.ownData.id:
                 this.field.gameOver(0);
@@ -173,17 +165,17 @@ export class ClientTetris extends MessageScene {
             case this.givenNames[1].id:
                 this.field.gameOver(2);
                 this.names[1].setColor('rgba(152, 37, 67, 1)')
-                this.makeRed(-4000 + 355, 375)
+                this.makeRed(-3000, 375)
                 break;
             case this.givenNames[2].id:
                 this.field.gameOver(3);
                 this.names[2].setColor('rgba(152, 37, 67, 1)')
-                this.makeRed(-4000 + 1295, 375)
+                this.makeRed(-2000, 375)
                 break;
             case this.givenNames[3].id:
                 this.field.gameOver(4);
                 this.names[3].setColor('rgba(152, 37, 67, 1)')
-                this.makeRed(-4000 + 1610, 375)
+                this.makeRed(-1000, 375)
                 break;
         }
     }
