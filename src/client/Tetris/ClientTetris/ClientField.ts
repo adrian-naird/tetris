@@ -16,6 +16,7 @@ export class ClientField {
     CamSet: boolean = false;
     Camera: Phaser.Cameras.Scene2D.Camera;
     nextBricks: SmallBrick[] = [];
+    
     constructor(scene: ClientTetris) {
         this.scene = scene;
         for (let i = 0; i < 5; i++) {
@@ -33,7 +34,6 @@ export class ClientField {
         this.cursors.down.on("down", () => { this.sendKeyMessage("Dd") })
         this.cursors.down.on("up", () => { this.sendKeyMessage("Du") })
         this.hKey.on("up", () => { this.sendKeyMessage("H") })
-        // this.updateNextBricks([1, 2, 3, 4, 5]);
     }
 
     sendKeyMessage(key: string) {

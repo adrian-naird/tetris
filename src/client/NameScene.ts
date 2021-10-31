@@ -34,7 +34,7 @@ export class NameScene extends Phaser.Scene {
         this.enter.once('down', () => {
             this.inputText = this.element.getChildByName('nameField');
             this.inputText.value;
-            this.scene.start('LobbyScene', { givingName: this.inputText.value });
+            this.scene.start('LobbyScene', { givingName: this.inputText.value, nameScene: true});
         })
     }
     update(): void {

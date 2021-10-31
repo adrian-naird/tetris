@@ -1,6 +1,7 @@
 import * as e from "express";
 import { ServerMessage } from "../../../Messages.js";
 import { NameIDData } from "../../../server/Server.js";
+import { LobbyInfo } from "../../LobbyScene.js";
 import { MessageScene } from "../../MessageScene.js";
 import { WebSocketController } from "../../WebSocketController.js";
 import { ClientField } from "./ClientField.js";
@@ -8,6 +9,7 @@ import { FullRow } from "./FullRow.js";
 import { ScrollingLogos } from "./Logo.js";
 export class ClientTetris extends MessageScene {
 
+    lobbyInfo: LobbyInfo
     ownData: NameIDData;
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     background: Phaser.Physics.Arcade.Sprite;
@@ -22,6 +24,8 @@ export class ClientTetris extends MessageScene {
     nextCam: Phaser.Cameras.Scene2D.Camera;
     logos: ScrollingLogos;
 
+    largeText: Phaser.GameObjects.Text;
+
     constructor() {
         super({
             key: "ClientTetris"
@@ -33,6 +37,7 @@ export class ClientTetris extends MessageScene {
         this.ownData = data.ownData;
         this.webSocketController = data.webSocket;
         this.webSocketController.changeScene(this);
+        this.lobbyInfo=data.lobbyInfo
     }
 
     preload(): void {
@@ -61,7 +66,8 @@ export class ClientTetris extends MessageScene {
         // l.logo2.setDepth(50)
         // l.logo3.setDepth(50)
         // new FullRow(this.field,0,10,1);
-
+        this.largeText = new Phaser.GameObjects.Text(this, 1920 / 2, 450, "", { fontFamily: 'lilian-webfont', fontSize: "72px", color: "white" }).setOrigin(0.5, 0).setAlign("center").setDepth(1001);
+        this.add.existing(this.largeText);
     }
 
 
@@ -129,42 +135,19 @@ export class ClientTetris extends MessageScene {
                 // this.fullrows.forEach(e => e.setDepth));
                 break;
             case "gameOver":
+                this.gameOverPerson(serverMessage.player)
+                break;
             case "playerGone":
-                switch (serverMessage.player.id) {
-                    case this.ownData.id:
-                        this.field.gameOver(0);
-                        this.makeRed(650, 630)
-                        this.makeRed(-5500, 1200)
-                        this.makeRed(-100, 100)
-                        this.makeRed(3000, 1000)
-                        this.logos.scene.events.removeAllListeners();
-                        break;
-                    case this.givenNames[0].id:
-                        this.field.gameOver(1);
-                        this.names[0].setColor('rgba(152, 37, 67, 1)')
-                        this.makeRed(-4000, 375)
-                        break;
-                    case this.givenNames[1].id:
-                        this.field.gameOver(2);
-                        this.names[1].setColor('rgba(152, 37, 67, 1)')
-                        this.makeRed(-4000 + 355, 375)
-                        break;
-                    case this.givenNames[2].id:
-                        this.field.gameOver(3);
-                        this.names[2].setColor('rgba(152, 37, 67, 1)')
-                        this.makeRed(-4000 + 1295, 375)
-                        break;
-                    case this.givenNames[3].id:
-                        this.field.gameOver(4);
-                        this.names[3].setColor('rgba(152, 37, 67, 1)')
-                        this.makeRed(-4000 + 1610, 375)
-                        break;
-                }
+                this.gameOverPerson(serverMessage.player)
+                this.givenNames.splice(this.givenNames.findIndex(e=>e==serverMessage.player), 1)
                 break;
             case "hostGone":
-
+                this.largeText.setText("Host left the game")
+                this.scene.stop("ClientTetris");
                 break;
             case "playerWon":
+                this.largeText.setText(serverMessage.player.name+" has won!")
+                setTimeout(e => this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }), 5000)
                 break;
             case "updateNext":
                 this.field.updateNextBricks(serverMessage.nextBricks);
@@ -172,7 +155,38 @@ export class ClientTetris extends MessageScene {
         }
     }
 
-    gameOverPerson() { }
+    gameOverPerson(player: NameIDData) {
+        switch (player.id) {
+            case this.ownData.id:
+                this.field.gameOver(0);
+                this.makeRed(650, 630)
+                this.makeRed(-5500, 1200)
+                this.makeRed(-100, 100)
+                this.makeRed(3000, 1000)
+                this.logos.scene.events.removeAllListeners();
+                break;
+            case this.givenNames[0].id:
+                this.field.gameOver(1);
+                this.names[0].setColor('rgba(152, 37, 67, 1)')
+                this.makeRed(-4000, 375)
+                break;
+            case this.givenNames[1].id:
+                this.field.gameOver(2);
+                this.names[1].setColor('rgba(152, 37, 67, 1)')
+                this.makeRed(-4000 + 355, 375)
+                break;
+            case this.givenNames[2].id:
+                this.field.gameOver(3);
+                this.names[2].setColor('rgba(152, 37, 67, 1)')
+                this.makeRed(-4000 + 1295, 375)
+                break;
+            case this.givenNames[3].id:
+                this.field.gameOver(4);
+                this.names[3].setColor('rgba(152, 37, 67, 1)')
+                this.makeRed(-4000 + 1610, 375)
+                break;
+        }
+    }
 
     onWebSocketReady() { };
 

@@ -29,13 +29,7 @@ export class ServerField {
         
         this.setStartField();
         this.createNextBricksArray(this.nextBricksArray);
-        // this.createTestField();
-        // this.addLineAtBottom();
-
-        // this.brick = new Brick(this, Math.ceil(Math.random() * 7));
         this.brick = new Brick(this,this.nextBricksArray.shift());
-        // this.brick = new Brick(this, 2);
-
     }
     createNextBricksArray(array: number[]){
         for (let i = 0; i < 7; i++) {
@@ -94,6 +88,7 @@ export class ServerField {
         }
         this.clientData.socket.send(JSON.stringify(smu))
     }
+
     createCurrentFieldArray(): number[][] {
         let fieldX: number;
         let fieldY: number;
@@ -156,7 +151,7 @@ export class ServerField {
         };
         this.clientData.socket.send(JSON.stringify(snl));
         this.server.sendToMembers(snl, this.clientData);
-        // this.server.checkIfWon(this.clientData)
+        this.server.checkIfWon(this.clientData)
         // this.brick.updateBoolean=false;
     }
     
@@ -281,6 +276,7 @@ export class ServerField {
     lineSent() {
         this.lineHasBeenSent = true;
     }
+
     addLineAtBottom() {
         for (let y = 0; y < 23; y++) {
             for (let x = 1; x < this.fieldNumberArray.length - 1; x++) {
@@ -293,6 +289,7 @@ export class ServerField {
         this.fieldNumberArray[Math.ceil(Math.random() * 10)][24] = 0;
         this.sendGenerateFieldMessage(this.fieldNumberArray);
     }
+    
     updateField() {
         this.sendGenerateFieldMessage(this.fieldNumberArray);
         this.checkForLines();

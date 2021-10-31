@@ -257,7 +257,7 @@ export class MainServer {
         */
         let overs: boolean[] = [];
         this.rounds.find(e => { return e.code == player.code }).memberList.forEach(e => overs.push(e.field.gameNotOver));
-        if (overs.every(e => e)) {
+        if (overs.every(e => !e)) {
             let smn: ServerMessagePlayerWon = {
                 type: "playerWon",
                 player: this.nameIDDatafy(player)
@@ -266,6 +266,7 @@ export class MainServer {
             this.sendToMembers(smn, player)
         }
     }
+
     /**
      * Generiert einen zufälligen einzigartigen 4-stelligen Zahlencode
      * @returns der Code
@@ -285,6 +286,7 @@ export class MainServer {
     onWebSocketClientClosed(clientSocket: ws) {
         let clientData: ClientData = this.socketToClientDataMap.get(clientSocket);
         let round = this.rounds.find(e => { return e.code == clientData.code })
+        console.log(round)
         // let clientData3Code: number = clientData3.code;
         let goneMessage: ServerMessage;
         let shg: ServerMessageGone = {
@@ -308,9 +310,9 @@ export class MainServer {
         this.sendToMembers(goneMessage, clientData);
 
         this.socketToClientDataMap.delete(clientSocket);
-        let newMemberList2: ClientData[] = this.rounds.find(e => { return e.code == clientData.code }).memberList
+        let newMemberList2: ClientData[] = round.memberList
         newMemberList2.splice(newMemberList2.indexOf(clientData), 1);
-        this.rounds.find(e => { return e.code == clientData.code }).memberList = newMemberList2
+        round.memberList = newMemberList2
     }
 }
 

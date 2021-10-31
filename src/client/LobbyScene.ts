@@ -6,6 +6,11 @@ import { NameBox } from "./namebox.js";
 import { MessageScene } from "./MessageScene.js";
 import { NameIDData } from "../server/Server.js";
 
+export type LobbyInfo = {
+    host: boolean,
+    code: number
+}
+
 export class LobbyScene extends MessageScene {
 
 
@@ -15,15 +20,16 @@ export class LobbyScene extends MessageScene {
         });
     }
 
+    lobbyInfo: LobbyInfo;
     ownData: NameIDData;
-    otherPlayers: NameIDData[] = [];
+    otherPlayers: NameIDData[];
     boxes: Boxes;
     codeInputDOM: Phaser.GameObjects.DOMElement;
     blackGaps: Phaser.GameObjects.DOMElement[];
     isAlreadyChecked: boolean = false;
     largeText: Phaser.GameObjects.Text;
     name: string;
-    code: number;
+    // code: number;
     webSocketController: WebSocketController;
     webSocketReady: boolean = false;
     stopUpdating: boolean = false;
@@ -32,12 +38,19 @@ export class LobbyScene extends MessageScene {
     textSize: number = 1;
     scaler: boolean = true;
 
+    nameScene: boolean;
+
     /**
      * Wird als aller erstes ausgeführt, nimmt erstmal den Namen von der NameScene an
      * @param data die Daten (der eingegebene Name)
      */
     init(data) {
         this.name = data.givingName;
+        this.otherPlayers = data.givenNames;
+        this.nameScene = data.nameScene;
+        this.lobbyInfo = data.lobbyInfo;
+        this.ownData = data.ownData;
+        this.webSocketController = data.webSocketController;
     }
 
     /**
@@ -72,7 +85,16 @@ export class LobbyScene extends MessageScene {
 
         this.boxes = new Boxes(this);
 
-        this.webSocketController = new WebSocketController(this);
+        if (this.nameScene) {
+            this.otherPlayers = [];
+            this.webSocketController = new WebSocketController(this);
+        } else {
+            this.boxes.newNames(this.otherPlayers);
+            this.boxes.changeCode(this.lobbyInfo.code);
+            if(this.lobbyInfo.host){
+                this.makeHost();
+            }
+        }
     }
 
     /**
@@ -84,7 +106,7 @@ export class LobbyScene extends MessageScene {
         if (!this.stopUpdating) {
             let inputText: any = this.codeInputDOM.getChildByName('codeInput');
 
-            if (inputText.value.length == 4 && inputText.value != this.code) {
+            if (inputText.value.length == 4 && inputText.value != this.lobbyInfo.code) {
                 if (this.isAlreadyChecked == false) {
                     let message: ClientMessageJoinFriend = {
                         type: "joinFriend",
@@ -123,24 +145,12 @@ export class LobbyScene extends MessageScene {
             case "codeAssignment":
                 this.ownData = serverMessage.ownData;
                 this.boxes.changeCode(serverMessage.code);
-                this.code = serverMessage.code;
+                this.lobbyInfo = { host: true, code: serverMessage.code };
                 break;
             case "friendJoins":
                 if (this.first) {
                     this.first = false;
-                    this.largeText.setText("START GAME")
-                    this.largeText.setInteractive();
-                    this.largeText.on('pointerdown', function (event) {
-                        let message: ClientMessageStartGame = {
-                            type: "startGame",
-                        }
-                        this.webSocketController.send(message);
-                        this.scene.start('ClientTetris', { givingNames: this.otherPlayers, webSocket: this.webSocketController, ownData: this.ownData });
-                    }, this);
-                    this.stopUpdating = true;
-                    this.codeInputDOM.destroy();
-                    this.blackGaps.forEach((e) => e.destroy());
-                    ["H", "O", "S", "T"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").text.setText(e));
+                    this.makeHost();
                 }
 
                 for (let i = 0; i < 4; i++) {
@@ -150,7 +160,8 @@ export class LobbyScene extends MessageScene {
                 }
                 break;
             case "joiningFriend":
-                this.code = serverMessage.code;
+                this.lobbyInfo.host=false;
+                this.lobbyInfo.code = serverMessage.code;
                 if (this.largeText.input != null) {
                     this.largeText.input.enabled = false;
                 }
@@ -164,7 +175,7 @@ export class LobbyScene extends MessageScene {
                 this.largeText.setText("WAIT FOR HOST TO START")
                 break;
             case "hostStartsTheGame":
-                this.scene.start('ClientTetris', { givingNames: this.otherPlayers, webSocket: this.webSocketController, ownData: this.ownData });
+                this.startGame();
                 break;
             case "codeError":
                 this.largeText.setText("CODE NOT FOUND")
@@ -188,7 +199,7 @@ export class LobbyScene extends MessageScene {
                 this.boxes.removeName(serverMessage.player.name);
                 break;
             case "hostStartsTheGame":
-                this.scene.start('ClientTetris', { givingNames: this.otherPlayers, webSocket: this.webSocketController });
+                this.startGame()
                 break;
             case "serverFull":
                 this.largeText.setText("SERVER FULL");
@@ -197,6 +208,29 @@ export class LobbyScene extends MessageScene {
                 this.largeText.setText("GAME IS RUNNING");
                 break;
         }
+    }
+
+    makeHost(){
+        this.largeText.setText("START GAME")
+                    this.largeText.setInteractive();
+                    this.largeText.on('pointerdown', function (event) {
+                        let message: ClientMessageStartGame = {
+                            type: "startGame",
+                        }
+                        this.webSocketController.send(message);
+                        this.startGame()
+                    }, this);
+                    this.stopUpdating = true;
+                    this.codeInputDOM.destroy();
+                    this.blackGaps.forEach((e) => e.destroy());
+                    ["H", "O", "S", "T"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").text.setText(e));
+    }
+
+    /**
+     * Startet das Spiel
+     */
+    startGame() {
+        this.scene.start('ClientTetris', { givingNames: this.otherPlayers, webSocket: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData })
     }
 
     /**
