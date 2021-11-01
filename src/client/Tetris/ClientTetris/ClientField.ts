@@ -39,6 +39,7 @@ export class ClientField {
         this.cursors.down.on("up", () => { this.sendKeyMessage("Du") })
         this.hKey.on("up", () => { this.sendKeyMessage("H") })
         this.fKey.on("up",() => {this.sendKeyMessage("F")})
+        // this.updateLineCounter(1);
     }
 
     sendKeyMessage(key: string) {
@@ -113,7 +114,17 @@ export class ClientField {
     }
 
     updateLineCounter(lineCounter: number){
-        // this.counterText= new Phaser.GameObjects.Text(this.scene,)
+        if(lineCounter>10){
+            this.counterText= new Phaser.GameObjects.Text(this.scene,1198,690,lineCounter.toString(),
+            { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white",fixedWidth: 1 }).setOrigin(0.5,0);
+            this.scene.add.existing(this.counterText);
+        }
+        else{
+            let string = "0"+lineCounter.toString();
+            this.counterText= new Phaser.GameObjects.Text(this.scene,1198,690,string,
+            { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white" }).setOrigin(0.5,0);
+            this.scene.add.existing(this.counterText);
+        }
     }
 
     destroy(pos: number) {
