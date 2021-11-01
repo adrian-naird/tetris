@@ -33,7 +33,7 @@ export type ClientMessageSendLine = {
 }
 
 // die Servernachrichten
-export type ServerMessage = ServerMessageUpdateShadow | ServerMessageUpdateNext | ServerMessageFriendJoins | ServerMessagePlayerWon | ServerMessageGameOver | ServerMessageNewLine | ServerMessageGone | ServerMessageNotification | ServerMessageJoiningFriend | ServerMessageCodeAssignment | ServerMessageNewField | ServerMessageUpdateHoldBrick;
+export type ServerMessage = ServerMessageUpdateCounter | ServerMessageUpdateShadow | ServerMessageUpdateNext | ServerMessageFriendJoins | ServerMessagePlayerWon | ServerMessageGameOver | ServerMessageNewLine | ServerMessageGone | ServerMessageNotification | ServerMessageJoiningFriend | ServerMessageCodeAssignment | ServerMessageNewField | ServerMessageUpdateHoldBrick;
 
 export type ServerMessageCodeAssignment = {
     type: "codeAssignment",
@@ -97,4 +97,9 @@ export type ServerMessageUpdateShadow = {
     yC: number,
     id: number,
     stones: boolean[][]
+}
+
+export type ServerMessageUpdateCounter = {
+    type: "updateCounter",
+    lineCounter: number
 }

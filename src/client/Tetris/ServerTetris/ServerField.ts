@@ -281,7 +281,11 @@ export class ServerField {
 
 
     sendUpdateCounterMessage(lineCounter: number) {
-        
+        let suc = {
+            type: "updateCounter",
+            lineCounter: lineCounter
+        }
+        this.clientData.socket.send(JSON.stringify(suc));
     }
 
 

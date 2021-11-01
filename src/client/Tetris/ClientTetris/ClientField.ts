@@ -91,10 +91,12 @@ export class ClientField {
         }
         this.holdBrick = new SmallBrick(this, holdId, 3000, 0, "HOLD");
     }
+    
     updateNextBricks(array: number[]) {
         for (let i = 0; i < 3; i++) { this.nextBricks.forEach(e => e.getChildren().forEach(e => e.destroy())); }
         array.forEach((brickId, index) => { this.nextBricks.push(new SmallBrick(this, brickId, -5500, index * 163, "NEXT")) })
     }
+
     updateShadowBrick(xC: number,yC: number,id:number,stones:boolean[][]){
         this.shadowBrick.clear(true,true);
         let fieldX;
