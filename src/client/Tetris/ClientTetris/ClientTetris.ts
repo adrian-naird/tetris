@@ -139,7 +139,7 @@ export class ClientTetris extends MessageScene {
             case "playerWon":
                 this.largeText.setText(serverMessage.player.name + " has won!")
                 this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
-                setTimeout(e => { this.scene.remove(); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
+                setTimeout(e => { this.field == null; this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
                 break;
             case "updateNext":
                 this.field.updateNextBricks(serverMessage.nextBricks);
