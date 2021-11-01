@@ -19,6 +19,7 @@ export class ServerField {
     gameNotOver: boolean = true;
     nextBricksArray: number[] = [];
     firstBrick: boolean = true;
+    lineCounter: number;
     
     
 
@@ -259,6 +260,11 @@ export class ServerField {
             this.newLineMessage(fieldY);
         }
 
+
+        this.lineCounter++
+        this.sendUpdateCounterMessage(this.lineCounter);
+
+
         for (let y = fieldY; y > 0; y--) {
             for (let x = 1; x < this.fieldNumberArray.length - 1; x++) {
                 this.fieldNumberArray[x][y] = this.fieldNumberArray[x][y - 1];
@@ -272,6 +278,12 @@ export class ServerField {
 
         this.updateField();
     }
+
+
+    sendUpdateCounterMessage(lineCounter: number) {
+        
+    }
+
 
     lineSent() {
         this.lineHasBeenSent = true;

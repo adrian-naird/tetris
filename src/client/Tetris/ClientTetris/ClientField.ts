@@ -18,6 +18,7 @@ export class ClientField {
     Camera: Phaser.Cameras.Scene2D.Camera;
     nextBricks: SmallBrick[] = [];
     shadowBrick: Phaser.Physics.Arcade.Group;
+    counterText: Phaser.GameObjects.Text;
     constructor(scene: ClientTetris) {
         this.scene = scene;
         for (let i = 0; i < 5; i++) {
@@ -110,6 +111,11 @@ export class ClientField {
             }
         }
     }
+
+    updateLineCounter(lineCounter: number){
+        // this.counterText= new Phaser.GameObjects.Text(this.scene,)
+    }
+
     destroy(pos: number) {
         this.stoneGroups[pos].clear(true, true);
     }
