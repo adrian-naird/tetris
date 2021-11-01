@@ -118,6 +118,7 @@ export class MainServer {
     onWebSocketClientMessage(messagerSocket: ws, messageJson: ws.Data) {
 
         let message: ClientMessage = JSON.parse(<string>messageJson);
+        let player: ClientData = this.socketToClientDataMap.get(messagerSocket);
 
         switch (message.type) {
             case "newClient":
@@ -148,7 +149,7 @@ export class MainServer {
                 let JoinerData: ClientData = this.socketToClientDataMap.get(messagerSocket);
                 let newCode: number = +message.newCode;
                 let joiningRound: round = this.rounds.find(e => { return e.code == newCode });
-                
+
                 if (!this.rounds.some(e => e.code == newCode)) {
                     let sce: ServerMessageNotification = {
                         type: "codeError"
@@ -196,7 +197,7 @@ export class MainServer {
                 let starterData: ClientData = this.socketToClientDataMap.get(messagerSocket);
                 let startedCode: number = starterData.code
                 let startedRound: round = this.rounds.find(e => { return e.code == startedCode })
-                startedRound.inMatch=true;
+                startedRound.inMatch = true;
                 let memberList: ClientData[] = startedRound.memberList;
 
                 memberList.forEach(e => e.field = new ServerField(e, this));
@@ -207,7 +208,10 @@ export class MainServer {
                 break;
             case "keyPressed":
                 let field = this.socketToClientDataMap.get(messagerSocket).field;
-                let brick = field.brick;
+                let brick;
+                if (field != null) {
+                    brick = field.brick;
+                }
                 if (brick != null) {
                     switch (message.key) {
                         case "R":
@@ -234,8 +238,8 @@ export class MainServer {
                         case "H":
                             field.changeHoldBrick();
                             break;
-                            case "F":
-                                field.brick.moveDownToBottom();
+                        case "F":
+                            field.brick.moveDownToBottom();
                             break;
                     }
                 }
@@ -268,9 +272,9 @@ export class MainServer {
                 player: this.nameIDDatafy(player)
             }
             player.socket.send(JSON.stringify(smn))
-            this.sendToMembers(smn, player)
-            round.inMatch=false;
-            round.memberList.forEach(e => e.field==null)
+            this.sendToMembers(smn, player);
+            round.inMatch = false;
+            round.memberList.forEach(e => e.field = null);
         }
     }
 
@@ -292,7 +296,6 @@ export class MainServer {
      */
     onWebSocketClientClosed(clientSocket: ws) {
         let clientData: ClientData = this.socketToClientDataMap.get(clientSocket);
-        console.log(this.rounds);
         let round = this.rounds.find(e => { return e.code == clientData.code })
         let goneMessage: ServerMessage;
 
