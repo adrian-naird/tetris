@@ -191,7 +191,7 @@ export class ServerField {
             }
             this.brick = new Brick(this, this.nextBricksArray.shift());
             this.updateNextBricks();
-        }, 500)
+        }, 200)
     }
 
     newLineMessage(y: number) {

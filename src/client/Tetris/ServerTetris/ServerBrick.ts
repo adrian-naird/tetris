@@ -14,12 +14,12 @@ export class Brick {
     left: boolean = false;
     right: boolean = false;
     down: boolean = false;
-
+    shadowBrick: Brick;
     constructor(public field: ServerField, public id: number) {
         this.xC = 4;
         this.yC = -3;
         this.updateBoolean = true;
-       
+
         switch (id) {
             case 1:
                 this.stones = [
@@ -101,6 +101,11 @@ export class Brick {
             this.brickRotation();
         }
     }
+    fKeyPushed() {
+        if (this.updateBoolean) {
+            this.moveDownToBottom();
+        }
+    }
 
     isValidMove(xC: number, yC: number): boolean {
         for (let y = 0; y < this.stones.length; y++) {
@@ -143,12 +148,15 @@ export class Brick {
         if (this.isValidMove(this.xC + 1, this.yC)) {
             this.xC++;
             this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
+            this.updateShadowBrick();
+
         }
     }
     moveLeft() {
         if (this.isValidMove(this.xC - 1, this.yC)) {
             this.xC--;
             this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
+            this.updateShadowBrick();
         }
     }
 
@@ -161,6 +169,7 @@ export class Brick {
                 this.stones = this.rotateMatrix(this.stoneContainer);
             }
             this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
+            this.updateShadowBrick();
         }
     }
     // see: https://www.jsmount.com/javascript-rotate-2d-matrix-90-degrees-clockwise/ 
@@ -216,7 +225,11 @@ export class Brick {
     }
 
 
-
+    moveDownToBottom() {
+        while (this.isValidMove(this.xC, this.yC + 1)) {
+            this.moveDown();
+        }
+    }
 
     brickRotation() {
         if (this.id == 4) {
@@ -289,6 +302,21 @@ export class Brick {
 
             }
         }
+    }
+    getShadowBrickYPosition(yC: number): number {
+        let offset = 0;
+        while(this.isValidMove(this.xC, yC + offset)){
+            offset++;
+        }
+        return offset+yC-1;
+    }
+    updateShadowBrick() {
+        // this.sendUpdateShadowBrickMessage(this.xC + 1, this.getShadowBrickYPosition(this.yC) + 5, this.id, this.stones);
+        console.log(this.getShadowBrickYPosition(this.yC)+5);
+    }
+
+    sendUpdateShadowBrickMessage(xC: number, yC: number, id: number, stones: boolean[][]) {
+
     }
 
     destroy() {

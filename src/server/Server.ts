@@ -234,6 +234,9 @@ export class MainServer {
                         case "H":
                             field.changeHoldBrick();
                             break;
+                            case "F":
+                                field.brick.moveDownToBottom();
+                                break;
                     }
                 }
                 break;

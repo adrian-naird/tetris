@@ -11,19 +11,22 @@ export class ClientField {
     holdBrick: SmallBrick;
     rKey: Phaser.Input.Keyboard.Key;
     hKey: Phaser.Input.Keyboard.Key;
+    fKey: Phaser.Input.Keyboard.Key;
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     scene: ClientTetris;
     CamSet: boolean = false;
     Camera: Phaser.Cameras.Scene2D.Camera;
     nextBricks: SmallBrick[] = [];
-    
+    shadowBrick: Phaser.Physics.Arcade.Group;
     constructor(scene: ClientTetris) {
         this.scene = scene;
         for (let i = 0; i < 5; i++) {
             this.stoneGroups[i] = new Phaser.Physics.Arcade.Group(scene.physics.world, scene);
         }
+        this.shadowBrick = new Phaser.Physics.Arcade.Group(scene.physics.world, scene);
         this.rKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         this.hKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+        this.fKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
 
         this.rKey.on("down", () => { this.sendKeyMessage("R") })
@@ -34,6 +37,12 @@ export class ClientField {
         this.cursors.down.on("down", () => { this.sendKeyMessage("Dd") })
         this.cursors.down.on("up", () => { this.sendKeyMessage("Du") })
         this.hKey.on("up", () => { this.sendKeyMessage("H") })
+        // this.fKey.on("up",() => {this.sendKeyMessage("F")})
+        // this.updateShadowBrick(5,5,3,[
+        //     [false, false, false],
+        //     [false, true, true],
+        //     [true, true, false],
+        // ])
     }
 
     sendKeyMessage(key: string) {
@@ -88,6 +97,23 @@ export class ClientField {
     updateNextBricks(array: number[]) {
         for (let i = 0; i < 3; i++) { this.nextBricks.forEach(e => e.getChildren().forEach(e => e.destroy())); }
         array.forEach((brickId, index) => { this.nextBricks.push(new SmallBrick(this, brickId, -5500, index * 163, "NEXT")) })
+    }
+    updateShadowBrick(xC: number,yC: number,id:number,stones:boolean[][]){
+        this.shadowBrick.clear(true,true);
+        let fieldX;
+        let fieldY;
+        for (let x = 0; x < stones.length; x++) {
+            for (let y = 0; y < stones.length; y++) {
+                if (stones[x][y]) {
+
+                    fieldX = xC + x;
+                    fieldY = yC + y;
+                    let stone = new Stone(this,id,fieldX,fieldY,this.serverFieldLeft,this.serverFieldTop)
+                    this.shadowBrick.add(stone);
+                    stone.setAlpha(0.5);
+                }
+            }
+        }
     }
     destroy(pos: number) {
         this.stoneGroups[pos].clear(true, true);
