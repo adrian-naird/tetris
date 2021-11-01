@@ -305,18 +305,24 @@ export class Brick {
     }
     getShadowBrickYPosition(yC: number): number {
         let offset = 0;
-        while(this.isValidMove(this.xC, yC + offset)){
+        while (this.isValidMove(this.xC, yC + offset)) {
             offset++;
         }
-        return offset+yC-1;
+        return offset + yC - 1;
     }
     updateShadowBrick() {
-        // this.sendUpdateShadowBrickMessage(this.xC + 1, this.getShadowBrickYPosition(this.yC) + 5, this.id, this.stones);
-        console.log(this.getShadowBrickYPosition(this.yC)+5);
+        this.sendUpdateShadowBrickMessage(this.xC, this.getShadowBrickYPosition(this.yC), this.id, this.stones);
     }
 
     sendUpdateShadowBrickMessage(xC: number, yC: number, id: number, stones: boolean[][]) {
-
+        let sus = {
+            type: "updateShadow",
+            xC: xC,
+            yC: yC,
+            id: id,
+            stones: stones
+        }
+        this.field.clientData.socket.send(JSON.stringify(sus));
     }
 
     destroy() {
