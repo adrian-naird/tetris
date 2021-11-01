@@ -236,7 +236,7 @@ export class MainServer {
                             break;
                             case "F":
                                 field.brick.moveDownToBottom();
-                                break;
+                            break;
                     }
                 }
                 break;

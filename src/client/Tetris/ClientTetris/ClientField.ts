@@ -37,12 +37,7 @@ export class ClientField {
         this.cursors.down.on("down", () => { this.sendKeyMessage("Dd") })
         this.cursors.down.on("up", () => { this.sendKeyMessage("Du") })
         this.hKey.on("up", () => { this.sendKeyMessage("H") })
-        // this.fKey.on("up",() => {this.sendKeyMessage("F")})
-        // this.updateShadowBrick(5,5,3,[
-        //     [false, false, false],
-        //     [false, true, true],
-        //     [true, true, false],
-        // ])
+        this.fKey.on("up",() => {this.sendKeyMessage("F")})
     }
 
     sendKeyMessage(key: string) {
