@@ -29,7 +29,6 @@ export class LobbyScene extends MessageScene {
     isAlreadyChecked: boolean = false;
     largeText: Phaser.GameObjects.Text;
     name: string;
-    // code: number;
     webSocketController: WebSocketController;
     webSocketReady: boolean = false;
     stopUpdating: boolean = false;

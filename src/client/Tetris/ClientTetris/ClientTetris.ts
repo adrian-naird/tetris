@@ -62,7 +62,7 @@ export class ClientTetris extends MessageScene {
         this.field = new ClientField(this);
         this.givenNames.forEach((e, i) => this.names[i].setText(e.name));
         this.logos = new ScrollingLogos(this);
-        this.largeText = new Phaser.GameObjects.Text(this, 1920 / 2, 100, "", { fontFamily: 'lilian-webfont', fontSize: "72px", color: "white" }).setOrigin(0.5, 0).setAlign("center").setDepth(1100);
+        this.largeText = new Phaser.GameObjects.Text(this, 1920 / 2, -200, "", { fontFamily: 'lilian-webfont', fontSize: "72px", color: "white" }).setOrigin(0.5, 0.5).setAlign("center").setDepth(1100);
         this.add.existing(this.largeText);
     }
 
@@ -133,12 +133,12 @@ export class ClientTetris extends MessageScene {
                 break;
             case "hostGone":
                 this.largeText.setText("Host left the game")
-                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setOrigin(0.5, 0).setScroll(0, -350).setBackgroundColor('rgba(152, 37, 67, 1)');
+                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
                 this.scene.stop("ClientTetris");
                 break;
             case "playerWon":
                 this.largeText.setText(serverMessage.player.name + " has won!")
-                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setOrigin(0.5, 0).setScroll(0, -350).setBackgroundColor('rgba(152, 37, 67, 1)');
+                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
                 setTimeout(e => { this.scene.remove(); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
                 break;
             case "updateNext":
