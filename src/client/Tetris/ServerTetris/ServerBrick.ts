@@ -79,6 +79,7 @@ export class Brick {
             this.updateShadowBrick();
             // console.log(this.xC, this.getShadowBrickYPosition(this.yC), this.id, this.stones)
             this.field.sendUpdateNextBricksMessage(this.field.nextBricksArray);
+            this.field.sendUpdateCounterMessage(this.field.lineCounter);
             this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
         let that = this;
 

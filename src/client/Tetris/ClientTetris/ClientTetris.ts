@@ -79,9 +79,9 @@ export class ClientTetris extends MessageScene {
         this.holdCam.setZoom(0.75);
 
 
-        // Position der NextCam stimmt noch nicht:
         this.nextCam = this.cameras.add(1148, 198, 100, 479).setOrigin(0, 0)
         this.nextCam.ignore(this.background);
+        this.names.forEach((e, i) => this.nextCam.ignore(e));
     }
 
     makeRed(x: number, w: number) {

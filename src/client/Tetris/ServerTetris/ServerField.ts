@@ -19,7 +19,7 @@ export class ServerField {
     gameNotOver: boolean = true;
     nextBricksArray: number[] = [];
     firstBrick: boolean = true;
-    lineCounter: number;
+    lineCounter: number = 0;
     
     
 

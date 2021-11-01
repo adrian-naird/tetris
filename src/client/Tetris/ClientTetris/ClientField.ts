@@ -118,6 +118,10 @@ export class ClientField {
     }
 
     updateLineCounter(lineCounter: number){
+        if(this.counterText2!=null){
+            this.counterText1.destroy();
+            this.counterText2.destroy();
+        }
         if(lineCounter>9){
             this.counterText1= new Phaser.GameObjects.Text(this.scene,1198,694,lineCounter.toString().charAt(0),
             { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white"}).setOrigin(0.5,0);
