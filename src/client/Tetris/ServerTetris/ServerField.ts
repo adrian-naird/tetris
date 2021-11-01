@@ -19,39 +19,39 @@ export class ServerField {
     gameNotOver: boolean = true;
     nextBricksArray: number[] = [];
     firstBrick: boolean = true;
-    lineCounter: number;
-    
-    
+    lineCounter: number = 0;
+    updateBoolean: boolean = true;
+
 
     constructor(clientData: ClientData, server: MainServer) {
         this.server = server;
         this.clientData = clientData;
         this.lines = [];
-        
+
         this.setStartField();
         this.createNextBricksArray(this.nextBricksArray);
-        this.brick = new Brick(this,this.nextBricksArray.shift());
+        this.brick = new Brick(this, this.nextBricksArray.shift());
     }
-    createNextBricksArray(array: number[]){
+    createNextBricksArray(array: number[]) {
         for (let i = 0; i < 7; i++) {
-            array[i] = i+1;
+            array[i] = i + 1;
         }
         this.shuffleArray(array);
-        
+
 
     }
     // see: https://www.codegrepper.com/code-examples/javascript/shuffle+array+values+typescript
-    shuffleArray(array:number[]){
-        
-            let currentIndex = array.length, temporaryValue, randomIndex;
-            while (0 != currentIndex) {
-              randomIndex = Math.floor(Math.random() * currentIndex);
-              currentIndex -= 1;
-              temporaryValue = array[currentIndex];
-              array[currentIndex] = array[randomIndex];
-              array[randomIndex] = temporaryValue;
-            }
-            return array;
+    shuffleArray(array: number[]) {
+
+        let currentIndex = array.length, temporaryValue, randomIndex;
+        while (0 != currentIndex) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+        return array;
     }
     changeHoldBrick() {
         this.createCurrentFieldArray();
@@ -71,23 +71,27 @@ export class ServerField {
     }
 
     sendUpdateHoldBrickMessage(holdId: number) {
-        let suhb: ServerMessageUpdateHoldBrick = {
-            type: "updateHoldBrick",
-            holdID: holdId
-        };
-        this.clientData.socket.send(JSON.stringify(suhb));
+        if (this.updateBoolean) {
+            let suhb: ServerMessageUpdateHoldBrick = {
+                type: "updateHoldBrick",
+                holdID: holdId
+            };
+            this.clientData.socket.send(JSON.stringify(suhb));
+        }
     }
-    updateNextBricks(){
-        let array = this.nextBricksArray.slice(0,5);
+    updateNextBricks() {
+        let array = this.nextBricksArray.slice(0, 5);
         this.sendUpdateNextBricksMessage(array);
     }
 
     sendUpdateNextBricksMessage(array: number[]) {
-        let smu: ServerMessageUpdateNext = {
-            type: "updateNext",
-            nextBricks: array
+        if (this.updateBoolean) {
+            let smu: ServerMessageUpdateNext = {
+                type: "updateNext",
+                nextBricks: array
+            }
+            this.clientData.socket.send(JSON.stringify(smu))
         }
-        this.clientData.socket.send(JSON.stringify(smu))
     }
 
     createCurrentFieldArray(): number[][] {
@@ -136,26 +140,27 @@ export class ServerField {
 
     checkGameOver() {
         for (let x = 1; x <= 10; x++) {
-            for (let y = 0; y< 4; y++) {
-                if (this.fieldNumberArray[x][y] != 0&&this.gameNotOver) { 
-                   this.gameOver();
+            for (let y = 0; y < 4; y++) {
+                if (this.fieldNumberArray[x][y] != 0 && this.gameNotOver) {
+                    this.gameOver();
                 }
             }
         }
     }
 
     gameOver() {
-        this.gameNotOver=false;
+        this.gameNotOver = false;
         let snl: ServerMessageGameOver = {
             type: "gameOver",
             player: this.server.nameIDDatafy(this.clientData)
         };
+        this.updateBoolean = false;
         this.clientData.socket.send(JSON.stringify(snl));
         this.server.sendToMembers(snl, this.clientData);
         this.server.checkIfWon(this.clientData)
         // this.brick.updateBoolean=false;
     }
-    
+
     addBrickToFieldArray() {
         // Eintragen des alten Steins ins FieldArray
         let fieldX: number;
@@ -177,26 +182,28 @@ export class ServerField {
         }
         this.brick.destroy();
     }
-    
+
     newBrick() {
-        setTimeout(() => {
-            // Erstellen des neuen Steins
-            if (this.lineHasBeenSent) {
-                this.addLineAtBottom();
-                this.lineHasBeenSent = false;
-            }
-            if(this.nextBricksArray.length < 8){
-                let newArray = [];
-                this.createNextBricksArray(newArray);
-                this.nextBricksArray = this.nextBricksArray.concat(newArray);
-            }
-            this.brick = new Brick(this, this.nextBricksArray.shift());
-            this.updateNextBricks();
-        }, 200)
+        if (this.updateBoolean) {
+            setTimeout(() => {
+                // Erstellen des neuen Steins
+                if (this.lineHasBeenSent) {
+                    this.addLineAtBottom();
+                    this.lineHasBeenSent = false;
+                }
+                if (this.nextBricksArray.length < 8) {
+                    let newArray = [];
+                    this.createNextBricksArray(newArray);
+                    this.nextBricksArray = this.nextBricksArray.concat(newArray);
+                }
+                this.brick = new Brick(this, this.nextBricksArray.shift());
+                this.updateNextBricks();
+            }, 200)
+        }
     }
 
     newLineMessage(y: number) {
-        if(this.fieldNumberArray[1][y]!=8 && this.fieldNumberArray[2][y]!=8){
+        if (this.fieldNumberArray[1][y] != 8 && this.fieldNumberArray[2][y] != 8 && this.updateBoolean) {
             let snl: ServerMessageNewLine = {
                 type: "newLine",
                 lines: this.lines
@@ -281,11 +288,14 @@ export class ServerField {
 
 
     sendUpdateCounterMessage(lineCounter: number) {
-        let suc = {
-            type: "updateCounter",
-            lineCounter: lineCounter
+        if (this.updateBoolean) {
+            let suc = {
+                type: "updateCounter",
+                lineCounter: lineCounter
+            }
+            this.clientData.socket.send(JSON.stringify(suc));
+
         }
-        this.clientData.socket.send(JSON.stringify(suc));
     }
 
 
@@ -305,20 +315,24 @@ export class ServerField {
         this.fieldNumberArray[Math.ceil(Math.random() * 10)][24] = 0;
         this.sendGenerateFieldMessage(this.fieldNumberArray);
     }
-    
+
     updateField() {
-        this.sendGenerateFieldMessage(this.fieldNumberArray);
-        this.checkForLines();
+        if (this.updateBoolean) {
+            this.sendGenerateFieldMessage(this.fieldNumberArray);
+            this.checkForLines();
+        }
     }
 
     sendGenerateFieldMessage(fieldArray: number[][]) {
-        let snf: ServerMessageNewField = {
-            type: "newField",
-            newField: fieldArray,
-            player: this.server.nameIDDatafy(this.clientData)
-        };
-        this.clientData.socket.send(JSON.stringify(snf));
-        this.server.sendToMembers(snf, this.clientData);
+        if (this.updateBoolean) {
+            let snf: ServerMessageNewField = {
+                type: "newField",
+                newField: fieldArray,
+                player: this.server.nameIDDatafy(this.clientData)
+            };
+            this.clientData.socket.send(JSON.stringify(snf));
+            this.server.sendToMembers(snf, this.clientData);
+        }
     }
 
     createTestField() {

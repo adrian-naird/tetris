@@ -72,10 +72,12 @@ export class Brick {
                     [false, true, false],
 
                 ]
+
                 break;
-
-
         }
+
+
+
         this.updateShadowBrick();
         this.field.sendUpdateNextBricksMessage(this.field.nextBricksArray);
         this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
