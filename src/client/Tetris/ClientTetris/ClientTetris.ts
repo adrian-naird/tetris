@@ -85,7 +85,6 @@ export class ClientTetris extends MessageScene {
     }
 
     makeRed(x: number, w: number) {
-        console.log("hehe")
         this.add.existing(new Phaser.GameObjects.Rectangle(this, x, 0, w, 2000, 0xffffff)
             .setOrigin(0, 0).setBlendMode(Phaser.BlendModes.SATURATION).setDepth(1000));
         this.add.existing(new Phaser.GameObjects.Rectangle(this, x, 0, w, 2000, 0x5e5e5e, 0.6)
@@ -95,73 +94,68 @@ export class ClientTetris extends MessageScene {
     }
 
     onMessage(serverMessage: ServerMessage) {
-        if (serverMessage.type == "newField") {
-            this.bool=true;
-            if (this.field != undefined) {
-                switch (serverMessage.player.id) {
-                    case this.ownData.id:
-                        this.field.generateField(serverMessage.newField, 0);
-                        break;
-                    case this.givenNames[0].id:
-                        this.field.generateField(serverMessage.newField, 1);
-                        break;
-                    case this.givenNames[1].id:
-                        this.field.generateField(serverMessage.newField, 2);
-                        break;
-                    case this.givenNames[2].id:
-                        this.field.generateField(serverMessage.newField, 3);
-                        break;
-                    case this.givenNames[3].id:
-                        this.field.generateField(serverMessage.newField, 4);
-                        break;
+        switch (serverMessage.type) {
+            case "newField":
+                if (this.field != undefined) {
+                    switch (serverMessage.player.id) {
+                        case this.ownData.id:
+                            this.field.generateField(serverMessage.newField, 0);
+                            break;
+                        case this.givenNames[0].id:
+                            this.field.generateField(serverMessage.newField, 1);
+                            break;
+                        case this.givenNames[1].id:
+                            this.field.generateField(serverMessage.newField, 2);
+                            break;
+                        case this.givenNames[2].id:
+                            this.field.generateField(serverMessage.newField, 3);
+                            break;
+                        case this.givenNames[3].id:
+                            this.field.generateField(serverMessage.newField, 4);
+                            break;
+                    }
                 }
-            }
-        } else {
-            if (this.bool) {
-                switch (serverMessage.type) {
-                    case "updateHoldBrick":
-                        this.field.updateHoldBrick(serverMessage.holdID);
-                        break;
-                    case "newLine":
-                        this.fullrows.forEach(e => e.destroy());
-                        this.fullrows = [];
-                        serverMessage.lines.forEach(e => this.fullrows.push(new FullRow(this.field, e - 5)));
-                        break;
-                    case "gameOver":
-                        this.gameOverPlayer(serverMessage.player)
-                        break;
-                    case "playerGone":
-                        this.gameOverPlayer(serverMessage.player)
-                        this.givenNames.splice(this.givenNames.findIndex(e => e == serverMessage.player), 1)
-                        break;
-                    case "hostGone":
-                        this.largeText.setText("Host left the game")
-                        this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
-                        this.scene.stop("ClientTetris");
-                        break;
-                    case "playerWon":
-                        this.largeText.setText(serverMessage.player.name + " has won!")
-                        this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
-                        setTimeout(e => {this.children.getAll().forEach(e=>e.destroy()); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
-                        break;
-                    case "updateNext":
-                        this.field.updateNextBricks(serverMessage.nextBricks);
-                        break;
-                    case "updateShadow":
-                        this.field.updateShadowBrick(serverMessage.xC, serverMessage.yC, serverMessage.id, serverMessage.stones);
-                        break;
-                    case "updateCounter":
-                        this.field.updateLineCounter(serverMessage.lineCounter);
-                        break;
-                }
-            }
+                break;
+            case "updateHoldBrick":
+                this.field.updateHoldBrick(serverMessage.holdID);
+                break;
+            case "newLine":
+                this.fullrows.forEach(e => e.destroy());
+                this.fullrows = [];
+                serverMessage.lines.forEach(e => this.fullrows.push(new FullRow(this.field, e - 5)));
+                break;
+            case "gameOver":
+                this.gameOverPlayer(serverMessage.player)
+                break;
+            case "playerGone":
+                this.gameOverPlayer(serverMessage.player)
+                this.givenNames.splice(this.givenNames.findIndex(e => e == serverMessage.player), 1)
+                break;
+            case "hostGone":
+                this.largeText.setText("Host left the game")
+                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
+                this.scene.stop("ClientTetris");
+                break;
+            case "playerWon":
+                this.largeText.setText(serverMessage.player.name + " has won!")
+                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
+                setTimeout(e => { this.children.getAll().forEach(e => e.destroy()); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
+                break;
+            case "updateNext":
+                this.field.updateNextBricks(serverMessage.nextBricks);
+                break;
+            case "updateShadow":
+                this.field.updateShadowBrick(serverMessage.xC, serverMessage.yC, serverMessage.id, serverMessage.stones);
+                break;
+            case "updateCounter":
+                this.field.updateLineCounter(serverMessage.lineCounter);
+                break;
         }
     }
 
     gameOverPlayer(player: NameIDData) {
         switch (player.id) {
             case this.ownData.id:
-                this.field.gameOver(0);
                 this.makeRed(650, 630)
                 this.makeRed(-5500, 1200)
                 this.makeRed(-100, 100)
@@ -169,22 +163,18 @@ export class ClientTetris extends MessageScene {
                 this.logos.scene.events.removeAllListeners();
                 break;
             case this.givenNames[0].id:
-                this.field.gameOver(1);
                 this.names[0].setColor('rgba(152, 37, 67, 1)')
                 this.makeRed(-4000, 375)
                 break;
             case this.givenNames[1].id:
-                this.field.gameOver(2);
                 this.names[1].setColor('rgba(152, 37, 67, 1)')
                 this.makeRed(-3000, 375)
                 break;
             case this.givenNames[2].id:
-                this.field.gameOver(3);
                 this.names[2].setColor('rgba(152, 37, 67, 1)')
                 this.makeRed(-2000, 375)
                 break;
             case this.givenNames[3].id:
-                this.field.gameOver(4);
                 this.names[3].setColor('rgba(152, 37, 67, 1)')
                 this.makeRed(-1000, 375)
                 break;

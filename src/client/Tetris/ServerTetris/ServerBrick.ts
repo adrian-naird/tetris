@@ -70,13 +70,9 @@ export class Brick {
                     [false, true, false],
                     [true, true, false],
                     [false, true, false],
-
                 ]
-
                 break;
         }
-
-
 
         this.updateShadowBrick();
         this.field.sendUpdateNextBricksMessage(this.field.nextBricksArray);
@@ -91,6 +87,7 @@ export class Brick {
             this.brickRotation();
         }
     }
+
     fKeyPushed() {
         if (this.updateBoolean) {
             this.moveDownToBottom();
