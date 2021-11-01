@@ -19,7 +19,6 @@ export class Brick {
         this.xC = 4;
         this.yC = -3;
         this.updateBoolean = true;
-
         switch (id) {
             case 1:
                 this.stones = [
@@ -74,20 +73,13 @@ export class Brick {
 
                 ]
                 break;
-            // case 8:
-            // this.stones = [
-            //     [false, true, false,true,true],
-            //     [true, true, false,true,true],
-            //     [false, true, true,true,true],
-            //     [false, true, false,true,true],
-            //     [false, true, false,true,true],
-
-
-            // ]
-            // break;
-        }
-
-        this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
+                
+                
+            }
+            this.updateShadowBrick();
+            // console.log(this.xC, this.getShadowBrickYPosition(this.yC), this.id, this.stones)
+            this.field.sendUpdateNextBricksMessage(this.field.nextBricksArray);
+            this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
         let that = this;
 
         this.interval = setInterval(() => {

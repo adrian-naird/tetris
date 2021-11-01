@@ -60,14 +60,14 @@ export class ServerField {
             this.holdId = this.brick.id;
             this.brick.destroy();
             this.brick = new Brick(this, newBrickId);
-            this.sendUpdateHoldBrickMessage(this.holdId);
         } else {
             this.holdId = this.brick.id;
             this.brick.destroy();
             this.brick = new Brick(this, Math.ceil(Math.random() * 7));
             this.firstHoldBrick = false;
-            this.sendUpdateHoldBrickMessage(this.holdId);
         }
+        this.sendUpdateHoldBrickMessage(this.holdId);
+        this.brick.updateShadowBrick();
     }
 
     sendUpdateHoldBrickMessage(holdId: number) {
