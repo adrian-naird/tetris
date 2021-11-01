@@ -18,7 +18,9 @@ export class ClientField {
     Camera: Phaser.Cameras.Scene2D.Camera;
     nextBricks: SmallBrick[] = [];
     shadowBrick: Phaser.Physics.Arcade.Group;
-    counterText: Phaser.GameObjects.Text;
+    counterText1: Phaser.GameObjects.Text;
+    counterText2: Phaser.GameObjects.Text;
+
     constructor(scene: ClientTetris) {
         this.scene = scene;
         for (let i = 0; i < 5; i++) {
@@ -39,7 +41,7 @@ export class ClientField {
         this.cursors.down.on("up", () => { this.sendKeyMessage("Du") })
         this.hKey.on("up", () => { this.sendKeyMessage("H") })
         this.fKey.on("up",() => {this.sendKeyMessage("F")})
-        // this.updateLineCounter(1);
+        // this.updateLineCounter(0);
     }
 
     sendKeyMessage(key: string) {
@@ -116,16 +118,22 @@ export class ClientField {
     }
 
     updateLineCounter(lineCounter: number){
-        if(lineCounter>10){
-            this.counterText= new Phaser.GameObjects.Text(this.scene,1198,690,lineCounter.toString(),
-            { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white",fixedWidth: 1 }).setOrigin(0.5,0);
-            this.scene.add.existing(this.counterText);
+        if(lineCounter>9){
+            this.counterText1= new Phaser.GameObjects.Text(this.scene,1198,694,lineCounter.toString().charAt(0),
+            { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white"}).setOrigin(0.5,0);
+            this.scene.add.existing(this.counterText1);
+            this.counterText2= new Phaser.GameObjects.Text(this.scene,1198,794,lineCounter.toString().charAt(1),
+            { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white"}).setOrigin(0.5,0);
+            this.scene.add.existing(this.counterText2);
         }
         else{
-            let string = "0"+lineCounter.toString();
-            this.counterText= new Phaser.GameObjects.Text(this.scene,1198,690,string,
-            { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white" }).setOrigin(0.5,0);
-            this.scene.add.existing(this.counterText);
+            this.counterText1= new Phaser.GameObjects.Text(this.scene,1198,694,"0",
+            { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white"}).setOrigin(0.5,0);
+            this.scene.add.existing(this.counterText1);
+            this.counterText2= new Phaser.GameObjects.Text(this.scene,1198,794,lineCounter.toString(),
+            { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white"}).setOrigin(0.5,0);
+            this.scene.add.existing(this.counterText2);
+            
         }
     }
 
