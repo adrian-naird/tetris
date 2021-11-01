@@ -24,7 +24,7 @@ export class ClientTetris extends MessageScene {
     nextCam: Phaser.Cameras.Scene2D.Camera;
     logos: ScrollingLogos;
     textCam: Phaser.Cameras.Scene2D.Camera
-
+    bool: boolean = false;
     largeText: Phaser.GameObjects.Text;
 
     constructor() {
@@ -94,62 +94,66 @@ export class ClientTetris extends MessageScene {
     }
 
     onMessage(serverMessage: ServerMessage) {
-        switch (serverMessage.type) {
-            case "newField":
-                if (this.field != undefined) {
-                    switch (serverMessage.player.id) {
-                        case this.ownData.id:
-                            this.field.generateField(serverMessage.newField, 0);
-                            break;
-                        case this.givenNames[0].id:
-                            this.field.generateField(serverMessage.newField, 1);
-                            break;
-                        case this.givenNames[1].id:
-                            this.field.generateField(serverMessage.newField, 2);
-                            break;
-                        case this.givenNames[2].id:
-                            this.field.generateField(serverMessage.newField, 3);
-                            break;
-                        case this.givenNames[3].id:
-                            this.field.generateField(serverMessage.newField, 4);
-                            break;
-                    }
+        if (serverMessage.type == "newField") {
+            this.bool=true;
+            if (this.field != undefined) {
+                switch (serverMessage.player.id) {
+                    case this.ownData.id:
+                        this.field.generateField(serverMessage.newField, 0);
+                        break;
+                    case this.givenNames[0].id:
+                        this.field.generateField(serverMessage.newField, 1);
+                        break;
+                    case this.givenNames[1].id:
+                        this.field.generateField(serverMessage.newField, 2);
+                        break;
+                    case this.givenNames[2].id:
+                        this.field.generateField(serverMessage.newField, 3);
+                        break;
+                    case this.givenNames[3].id:
+                        this.field.generateField(serverMessage.newField, 4);
+                        break;
                 }
-                break;
-            case "updateHoldBrick":
-                this.field.updateHoldBrick(serverMessage.holdID);
-                break;
-            case "newLine":
-                this.fullrows.forEach(e => e.destroy());
-                this.fullrows = [];
-                serverMessage.lines.forEach(e => this.fullrows.push(new FullRow(this.field, e - 5)));
-                break;
-            case "gameOver":
-                this.gameOverPlayer(serverMessage.player)
-                break;
-            case "playerGone":
-                this.gameOverPlayer(serverMessage.player)
-                this.givenNames.splice(this.givenNames.findIndex(e => e == serverMessage.player), 1)
-                break;
-            case "hostGone":
-                this.largeText.setText("Host left the game")
-                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
-                this.scene.stop("ClientTetris");
-                break;
-            case "playerWon":
-                this.largeText.setText(serverMessage.player.name + " has won!")
-                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
-                setTimeout(e => { this.scene.remove(); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
-                break;
-            case "updateNext":
-                this.field.updateNextBricks(serverMessage.nextBricks);
-                break;
-            case "updateShadow":
-                this.field.updateShadowBrick(serverMessage.xC, serverMessage.yC, serverMessage.id, serverMessage.stones);
-                break;
-            case "updateCounter":
-                this.field.updateLineCounter(serverMessage.lineCounter);
-                break;
+            }
+        } else {
+            if (this.bool) {
+                switch (serverMessage.type) {
+                    case "updateHoldBrick":
+                        this.field.updateHoldBrick(serverMessage.holdID);
+                        break;
+                    case "newLine":
+                        this.fullrows.forEach(e => e.destroy());
+                        this.fullrows = [];
+                        serverMessage.lines.forEach(e => this.fullrows.push(new FullRow(this.field, e - 5)));
+                        break;
+                    case "gameOver":
+                        this.gameOverPlayer(serverMessage.player)
+                        break;
+                    case "playerGone":
+                        this.gameOverPlayer(serverMessage.player)
+                        this.givenNames.splice(this.givenNames.findIndex(e => e == serverMessage.player), 1)
+                        break;
+                    case "hostGone":
+                        this.largeText.setText("Host left the game")
+                        this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
+                        this.scene.stop("ClientTetris");
+                        break;
+                    case "playerWon":
+                        this.largeText.setText(serverMessage.player.name + " has won!")
+                        this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
+                        setTimeout(e => { this.field = null; this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
+                        break;
+                    case "updateNext":
+                        this.field.updateNextBricks(serverMessage.nextBricks);
+                        break;
+                    case "updateShadow":
+                        this.field.updateShadowBrick(serverMessage.xC, serverMessage.yC, serverMessage.id, serverMessage.stones);
+                        break;
+                    case "updateCounter":
+                        this.field.updateLineCounter(serverMessage.lineCounter);
+                        break;
+                }
+            }
         }
     }
 
