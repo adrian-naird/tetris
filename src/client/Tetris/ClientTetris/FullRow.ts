@@ -6,9 +6,9 @@ export class FullRow extends Phaser.GameObjects.Rectangle {
 
     constructor(public field: ClientField, y: number) {
         super(field.scene, 36 + field.serverFieldLeft - 36, y * 36 + field.serverFieldTop, 360, 36, 0xffffff);
-        this.setDepth(100);
         this.setOrigin(0, 0);
         field.scene.add.existing(this);
+        this.setDepth(1500);
         this.setInteractive();
         this.field.scene.input.setDraggable(this);
         this.on('drag', (pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
