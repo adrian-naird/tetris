@@ -125,7 +125,7 @@ export class ClientTetris extends MessageScene {
                 serverMessage.lines.forEach(e => this.fullrows.push(new FullRow(this.field, e - 5)));
                 break;
             case "gameOver":
-                this.gameOverPlayer(serverMessage.player)
+                this.gameOverPlayer(serverMessage.player);
                 break;
             case "playerGone":
                 this.gameOverPlayer(serverMessage.player)
@@ -161,6 +161,7 @@ export class ClientTetris extends MessageScene {
                 this.makeRed(-100, 100)
                 this.makeRed(3000, 1000)
                 this.logos.scene.events.removeAllListeners();
+                this.field.gameOver();
                 break;
             case this.givenNames[0].id:
                 this.names[0].setColor('rgba(152, 37, 67, 1)')

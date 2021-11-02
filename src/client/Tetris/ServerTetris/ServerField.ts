@@ -21,7 +21,7 @@ export class ServerField {
     firstBrick: boolean = true;
     lineCounter: number = 0;
     updateBoolean: boolean = true;
-
+    lastFreeHoleAtGreyLine: number= Math.ceil(Math.random()*10);
 
     constructor(clientData: ClientData, server: MainServer) {
         this.server = server;
@@ -29,8 +29,13 @@ export class ServerField {
         this.lines = [];
 
         this.setStartField();
+        // this.createTestField();
         this.createNextBricksArray(this.nextBricksArray);
         this.brick = new Brick(this, this.nextBricksArray.shift());
+        // for (let i = 0; i < 10; i++) {
+            this.addLineAtBottom();
+        // }
+        console.log(this.fieldNumberArray);
     }
     createNextBricksArray(array: number[]) {
         for (let i = 0; i < 7; i++) {
@@ -225,10 +230,13 @@ export class ServerField {
     checkOneLine(y: number) {
         for (let x = 1; x <= 10; x++) {
             if (this.fieldNumberArray[x][y] == 0) { return }
-
+            
+        }
+        if(this.fieldNumberArray[1][y]==8||this.fieldNumberArray[2][y]==8){
+            this.removeSolvedLine(y);
         }
         // Das Programm landet hier wenn eine Reihe an der Stelle y vervollständigt wurde:
-        if (!this.lines.some(element => element == y)) {
+        if(!this.lines.some(element => element == y)) {
             this.lines.push(y);
             this.lines.sort();
 
@@ -246,6 +254,8 @@ export class ServerField {
         setTimeout(() => {
             this.waitForAnimation = false;
             this.lineDestroyDelay = 15;
+            // die erste gelöste Reihe wird entfernt, 
+            // am Ende von removeSolvedLine wird nochmal überprüft ob es gelöste Reihen gibt.
             this.removeSolvedLine(this.lines[0]);
             this.lineDestroyDelay = 1000;
         }, this.lineDestroyDelay)
@@ -304,7 +314,7 @@ export class ServerField {
     }
 
     addLineAtBottom() {
-        for (let y = 0; y < 23; y++) {
+        for (let y = 0; y < 24; y++) {
             for (let x = 1; x < this.fieldNumberArray.length - 1; x++) {
                 this.fieldNumberArray[x][y] = this.fieldNumberArray[x][y + 1];
             }
@@ -312,7 +322,15 @@ export class ServerField {
         for (let x = 1; x < this.fieldNumberArray.length - 1; x++) {
             this.fieldNumberArray[x][24] = 8;
         }
-        this.fieldNumberArray[Math.ceil(Math.random() * 10)][24] = 0;
+        if(Math.random()<0.5){
+            this.fieldNumberArray[this.lastFreeHoleAtGreyLine][24] = 0;
+            console.log(this.lastFreeHoleAtGreyLine);
+        }
+        else{
+            let hole = Math.ceil(Math.random() * 10)
+            this.fieldNumberArray[hole][24] = 0;
+            this.lastFreeHoleAtGreyLine = hole;
+        }
         this.sendGenerateFieldMessage(this.fieldNumberArray);
     }
 

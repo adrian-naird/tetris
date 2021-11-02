@@ -5,6 +5,7 @@ import { SmallBrick } from "./SmallBrick.js";
 import { Stone } from "./Stone.js";
 export class ClientField {
 
+
     stoneGroups: Phaser.Physics.Arcade.Group[] = [];
     serverFieldLeft: number = 780;
     serverFieldTop: number = 180;
@@ -76,7 +77,7 @@ export class ClientField {
                 xOffset = -1000;
                 break;
         }
-        
+
         this.destroy(pos);
         for (let y = 1; y < fieldArray[1].length - 1; y++) {
             for (let x = 1; x < fieldArray.length - 1; x++) {
@@ -138,7 +139,17 @@ export class ClientField {
             this.scene.add.existing(this.counterText2);
         }
     }
-
+    gameOver() {
+        this.rKey.off("down");
+        this.hKey.off("up");
+        this.fKey.off("up");
+        this.cursors.left.off("up");
+        this.cursors.left.off("down");
+        this.cursors.right.off("up");
+        this.cursors.right.off("down");
+        this.cursors.down.off("up");
+        this.cursors.down.off("down");
+    }
     destroy(pos: number) {
         this.stoneGroups[pos].clear(true, true);
     }

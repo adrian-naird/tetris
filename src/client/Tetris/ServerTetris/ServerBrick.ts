@@ -4,7 +4,7 @@ import { Stone } from "../ClientTetris/Stone.js";
 export class Brick {
     public stones: boolean[][];
     stoneContainer: boolean[][];
-    public updateBoolean: boolean;
+    public updateBoolean: boolean= true;
     xC: number;
     yC: number;
     rlcounter: number = 0;
@@ -15,10 +15,11 @@ export class Brick {
     right: boolean = false;
     down: boolean = false;
     shadowBrick: Brick;
+    shadowBrickUpdated: boolean = false;
     constructor(public field: ServerField, public id: number) {
         this.xC = 4;
         this.yC = -3;
-        this.updateBoolean = true;
+        
         switch (id) {
             case 1:
                 this.stones = [
@@ -83,13 +84,13 @@ export class Brick {
     }
 
     rKeypushed() {
-        if (this.updateBoolean) {
+        if (this.updateBoolean&& this.field.updateBoolean) {
             this.brickRotation();
         }
     }
 
     fKeyPushed() {
-        if (this.updateBoolean) {
+        if (this.updateBoolean&& this.field.updateBoolean) {
             this.moveDownToBottom();
         }
     }
@@ -148,7 +149,7 @@ export class Brick {
     }
 
     rotateBrick() {
-        if (this.isRotatable()) {
+        if (this.isRotatable()&& this.field.updateBoolean) {
             // da this.rotateMatrix gegen den Uhrzeigersinn rotiert, lasse ich es einfach drei mal hintereinander aufrufen
             // damit es im Uhrzeigersinn rotiert. 
             for (let i = 0; i < 3; i++) {
@@ -179,14 +180,19 @@ export class Brick {
     }
 
     update() {
-        if (this.updateBoolean && !this.field.waitForAnimation) {
+        if (this.updateBoolean && this.field.updateBoolean&& !this.field.waitForAnimation) {
             this.rlcounter++;
             this.rlcounter++;
             this.downCounter++;
 
+            
             if (this.counter + 150 < Date.now()) {
                 this.moveDown();
                 this.counter = Date.now();
+                if(!this.shadowBrickUpdated){
+                    this.updateShadowBrick();
+                    this.shadowBrickUpdated = true;
+                }
             }
 
             if (this.left) {
