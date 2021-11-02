@@ -2,7 +2,7 @@ import { ServerField } from "./client/Tetris/ServerTetris/ServerField";
 import { NameIDData } from "./server/Server.js";
 
 // die Clientnachrichten
-export type ClientMessage = ClientMessageSendLine | ClientMessageNewClient | ClientMessageLineDrag | ClientMessageJoinFriend | ClientMessageStartGame | ClientMessageKeyPressed;
+export type ClientMessage = ClientMessageSendLine | ClientMessageNewClient | ClientMessageLineDrag | ClientMessageJoinFriend | ClientMessageStartGame | ClientMessageKeyPressed | ClientMessageEverythingRendered;
 
 export type ClientMessageNewClient = {
     type: "newClient",
@@ -30,6 +30,9 @@ export type ClientMessageLineDrag = {
 export type ClientMessageSendLine = {
     type: "sendLine",
     player: NameIDData
+}
+export type ClientMessageEverythingRendered = {
+    type: "everythingRendered"
 }
 
 // die Servernachrichten

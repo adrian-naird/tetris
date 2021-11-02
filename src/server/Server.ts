@@ -251,6 +251,16 @@ export class MainServer {
                 let id = message.player.id;
                 this.clients.forEach(e => { if (e.id == id) { e.field.lineSent() } });
                 break;
+            case "everythingRendered":
+                let field1 = this.socketToClientDataMap.get(messagerSocket).field;
+                if(field1!=null){
+                    field1.sendUpdateCounterMessage(field1.lineCounter);
+                    field1.sendUpdateNextBricksMessage(field1.nextBricksArray);
+                    if(field.brick != null){
+                        field1.brick.updateShadowBrick();
+                    }
+                }
+            break;
         }
     }
 

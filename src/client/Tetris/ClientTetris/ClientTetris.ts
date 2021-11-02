@@ -1,5 +1,5 @@
 import * as e from "express";
-import { ServerMessage } from "../../../Messages.js";
+import { ClientMessageEverythingRendered, ServerMessage } from "../../../Messages.js";
 import { NameIDData } from "../../../server/Server.js";
 import { LobbyInfo } from "../../LobbyScene.js";
 import { MessageScene } from "../../MessageScene.js";
@@ -64,6 +64,7 @@ export class ClientTetris extends MessageScene {
         this.logos = new ScrollingLogos(this);
         this.largeText = new Phaser.GameObjects.Text(this, 1920 / 2, -200, "", { fontFamily: 'lilian-webfont', fontSize: "72px", color: "white" }).setOrigin(0.5, 0.5).setAlign("center").setDepth(1100);
         this.add.existing(this.largeText);
+        this.sendEverythingRenderedMessage();
     }
 
 
@@ -218,5 +219,11 @@ export class ClientTetris extends MessageScene {
             this.gameCams[i].scrollX = scrollX;
             // this.gameCams[i].setBackgroundColor('rgba(180, 0, 85, 0.25)');
         }
+    }
+    sendEverythingRenderedMessage(){
+        let message: ClientMessageEverythingRendered = {
+            type: "everythingRendered"
+        }
+        this.webSocketController.send(message);
     }
 }
