@@ -124,18 +124,18 @@ export class ClientField {
         }
         if (lineCounter > 9) {
             this.counterText1 = new Phaser.GameObjects.Text(this.scene, 1198, 694, lineCounter.toString().charAt(0),
-                { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white" }).setOrigin(0.5, 0);
+                { fontFamily: 'daydream-webfont', fontSize: "75px", color: "white" }).setOrigin(0.5, 0);
             this.scene.add.existing(this.counterText1);
             this.counterText2 = new Phaser.GameObjects.Text(this.scene, 1198, 794, lineCounter.toString().charAt(1),
-                { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white" }).setOrigin(0.5, 0);
+                { fontFamily: 'daydream-webfont', fontSize: "75px", color: "white" }).setOrigin(0.5, 0);
             this.scene.add.existing(this.counterText2);
         }
         else {
             this.counterText1 = new Phaser.GameObjects.Text(this.scene, 1198, 694, "0",
-                { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white" }).setOrigin(0.5, 0);
+                { fontFamily: 'daydream-webfont', fontSize: "75px", color: "white" }).setOrigin(0.5, 0);
             this.scene.add.existing(this.counterText1);
             this.counterText2 = new Phaser.GameObjects.Text(this.scene, 1198, 794, lineCounter.toString(),
-                { fontFamily: 'lilian-webfont', fontSize: "100px", color: "white" }).setOrigin(0.5, 0);
+                { fontFamily: 'daydream-webfont', fontSize: "75px", color: "white" }).setOrigin(0.5, 0);
             this.scene.add.existing(this.counterText2);
         }
     }

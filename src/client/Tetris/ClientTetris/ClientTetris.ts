@@ -164,20 +164,26 @@ export class ClientTetris extends MessageScene {
                 this.field.gameOver();
                 break;
             case this.givenNames[0].id:
-                this.names[0].setColor('rgba(152, 37, 67, 1)')
+                // this.names[0].setColor('rgba(152, 37, 67, 1)')
                 this.makeRed(-4000, 375)
+                this.makeRed(30, 315)
                 break;
             case this.givenNames[1].id:
-                this.names[1].setColor('rgba(152, 37, 67, 1)')
+                // this.names[1].setColor('rgba(152, 37, 67, 1)')
                 this.makeRed(-3000, 375)
+                this.makeRed(345, 315)
+
                 break;
             case this.givenNames[2].id:
-                this.names[2].setColor('rgba(152, 37, 67, 1)')
+                // this.names[2].setColor('rgba(152, 37, 67, 1)')
                 this.makeRed(-2000, 375)
+                this.makeRed(1285, 315)
+
                 break;
             case this.givenNames[3].id:
-                this.names[3].setColor('rgba(152, 37, 67, 1)')
+                // this.names[3].setColor('rgba(152, 37, 67, 1)')
                 this.makeRed(-1000, 375)
+                this.makeRed(1600, 315)
                 break;
         }
     }
