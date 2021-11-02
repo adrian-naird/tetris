@@ -256,7 +256,7 @@ export class MainServer {
                 if(field1!=null){
                     field1.sendUpdateCounterMessage(field1.lineCounter);
                     field1.sendUpdateNextBricksMessage(field1.nextBricksArray);
-                    if(field.brick != null){
+                    if(field1.brick != null){
                         field1.brick.updateShadowBrick();
                     }
                 }
