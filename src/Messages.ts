@@ -5,104 +5,104 @@ import { NameIDData } from "./server/Server.js";
 export type ClientMessage = ClientMessageSendLine | ClientMessageNewClient | ClientMessageLineDrag | ClientMessageJoinFriend | ClientMessageStartGame | ClientMessageKeyPressed | ClientMessageEverythingRendered;
 
 export type ClientMessageNewClient = {
-    type: "newClient",
+    id: "newClient",
     name: string
 }
 
 export type ClientMessageJoinFriend = {
-    type: "joinFriend",
+    id: "joinFriend",
     newCode: number
 }
 
 export type ClientMessageStartGame = {
-    type: "startGame"
+    id: "startGame"
 }
 
 export type ClientMessageKeyPressed = {
-    type: "keyPressed",
+    id: "keyPressed",
     key: string
 }
 
 export type ClientMessageLineDrag = {
-    type: "lineDrag"
+    id: "lineDrag"
 }
 
 export type ClientMessageSendLine = {
-    type: "sendLine",
+    id: "sendLine",
     player: NameIDData
 }
 export type ClientMessageEverythingRendered = {
-    type: "everythingRendered"
+    id: "everythingRendered"
 }
 
 // die Servernachrichten
 export type ServerMessage = ServerMessageUpdateCounter | ServerMessageUpdateShadow | ServerMessageUpdateNext | ServerMessageFriendJoins | ServerMessagePlayerWon | ServerMessageGameOver | ServerMessageNewLine | ServerMessageGone | ServerMessageNotification | ServerMessageJoiningFriend | ServerMessageCodeAssignment | ServerMessageNewField | ServerMessageUpdateHoldBrick;
 
 export type ServerMessageCodeAssignment = {
-    type: "codeAssignment",
+    id: "codeAssignment",
     ownData: NameIDData,
     code: number
 }
 
 export type ServerMessageNotification = {
-    type: "hostStartsTheGame" | "codeError" | "serverFull" | "gameRunning",
+    id: "hostStartsTheGame" | "codeError" | "serverFull" | "gameRunning",
 }
 
 export type ServerMessageFriendJoins = {
-    type: "friendJoins",
+    id: "friendJoins",
     player: NameIDData
 }
 
 export type ServerMessageGone = {
-    type: "hostGone" | "playerGone",
+    id: "hostGone" | "playerGone",
     player: NameIDData
 }
 
 export type ServerMessageNewLine = {
-    type: "newLine",
+    id: "newLine",
     lines: number[]
 }
 
 export type ServerMessageJoiningFriend = {
-    type: "joiningFriend",
+    id: "joiningFriend",
     newPlayers: NameIDData[];
     code: number
 }
 
 export type ServerMessageNewField = {
-    type: "newField",
+    id: "newField",
     newField: number[][],
     player: NameIDData
 }
 
 export type ServerMessageUpdateHoldBrick = {
-    type: "updateHoldBrick",
+    id: "updateHoldBrick",
     holdID: number
 }
 export type ServerMessageGameOver = {
-    type: "gameOver",
+    id: "gameOver",
     player: NameIDData
 }
 
 export type ServerMessagePlayerWon = {
-    type: "playerWon",
+    id: "playerWon",
     player: NameIDData
 }
 
 export type ServerMessageUpdateNext = {
-    type: "updateNext",
+    id: "updateNext",
     nextBricks: number[]
 }
 
 export type ServerMessageUpdateShadow = {
-    type: "updateShadow",
+    id: "updateShadow",
     xC: number,
     yC: number,
-    id: number,
+    stoneID: number,
     stones: boolean[][]
 }
 
 export type ServerMessageUpdateCounter = {
-    type: "updateCounter",
+    id: "updateCounter",
     lineCounter: number
 }

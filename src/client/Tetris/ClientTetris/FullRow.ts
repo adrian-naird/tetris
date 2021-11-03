@@ -15,7 +15,7 @@ export class FullRow extends Phaser.GameObjects.Rectangle {
             this.setPosition(dragX + 50, dragY + 5);
             this.setScale(0.75, 0.7);
             let message: ClientMessageLineDrag = {
-                type: "lineDrag"
+                id: "lineDrag"
             }
             this.field.scene.webSocketController.send(message);
         });
@@ -43,14 +43,14 @@ export class FullRow extends Phaser.GameObjects.Rectangle {
         if (number > 0) {
             if (this.field.scene.givenNames[number - 1] != undefined) {
                 let message: ClientMessageSendLine = {
-                    type: "sendLine",
+                    id: "sendLine",
                     player: this.field.scene.givenNames[number - 1]
                 }
                 this.field.scene.webSocketController.send(message);
             }
         } else {
             let message: ClientMessageSendLine = {
-                type: "sendLine",
+                id: "sendLine",
                 player: this.field.scene.ownData
             }
             this.field.scene.webSocketController.send(message);

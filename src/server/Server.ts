@@ -72,7 +72,7 @@ export class MainServer {
         that.wsServer.on('connection', (socketClient: ws) => {
 
             socketClient.on('message', (message: ws.Data) => {
-                that.onWebSocketClientMessage(socketClient, message);
+                that.onMessage(socketClient, message);
             })
 
             socketClient.on('close', () => {
@@ -115,12 +115,12 @@ export class MainServer {
      * @param messagerSocket Websocket des Absenders der Message
      * @param messageJson die Nachricht 
      */
-    onWebSocketClientMessage(messagerSocket: ws, messageJson: ws.Data) {
+    onMessage(messagerSocket: ws, messageJson: ws.Data) {
 
         let message: ClientMessage = JSON.parse(<string>messageJson);
         let player: ClientData = this.socketToClientDataMap.get(messagerSocket);
 
-        switch (message.type) {
+        switch (message.id) {
             case "newClient":
                 //Erstelle dem neuen Client eine ClientData, und setz in richtig ins System ein. Code generieren, einsetzen in die Maps, usw.
                 let newClientCode = this.generateCode();
@@ -137,7 +137,7 @@ export class MainServer {
                 let ownMatch: ClientData[] = [newClientData];
                 this.rounds.push({ code: newClientCode, memberList: ownMatch, inMatch: false });
                 let sca: ServerMessageCodeAssignment = {
-                    type: "codeAssignment",
+                    id: "codeAssignment",
                     ownData: this.nameIDDatafy(newClientData),
                     code: newClientCode
                 }
@@ -152,12 +152,12 @@ export class MainServer {
 
                 if (!this.rounds.some(e => e.code == newCode)) {
                     let sce: ServerMessageNotification = {
-                        type: "codeError"
+                        id: "codeError"
                     }
                     messagerSocket.send(JSON.stringify(sce));
                 } else if (joiningRound.inMatch) {
                     let sce: ServerMessageNotification = {
-                        type: "gameRunning"
+                        id: "gameRunning"
                     }
                     messagerSocket.send(JSON.stringify(sce));
                 } else {
@@ -166,13 +166,13 @@ export class MainServer {
                         JoinerData.host = false;
 
                         let sfj: ServerMessageFriendJoins = {
-                            type: "friendJoins",
+                            id: "friendJoins",
                             player: this.nameIDDatafy(JoinerData)
                         };
 
 
                         let sjf: ServerMessageJoiningFriend = {
-                            type: "joiningFriend",
+                            id: "joiningFriend",
                             newPlayers: newMemberList,
                             code: newCode
                         };
@@ -186,7 +186,7 @@ export class MainServer {
 
                     } else {
                         let ssf: ServerMessageNotification = {
-                            type: "serverFull"
+                            id: "serverFull"
                         }
                         messagerSocket.send(JSON.stringify(ssf));
                     }
@@ -202,7 +202,7 @@ export class MainServer {
 
                 memberList.forEach(e => e.field = new ServerField(e, this));
                 let shs: ServerMessageNotification = {
-                    type: "hostStartsTheGame",
+                    id: "hostStartsTheGame",
                 };
                 this.sendToMembers(shs, this.socketToClientDataMap.get(messagerSocket));
                 break;
@@ -278,7 +278,7 @@ export class MainServer {
         round.memberList.forEach(e => overs.push(e.field.gameNotOver));
         if (overs.every(e => !e)) {
             let smn: ServerMessagePlayerWon = {
-                type: "playerWon",
+                id: "playerWon",
                 player: this.nameIDDatafy(player)
             }
             player.socket.send(JSON.stringify(smn))
@@ -310,11 +310,11 @@ export class MainServer {
         let goneMessage: ServerMessage;
 
         let shg: ServerMessageGone = {
-            type: "hostGone",
+            id: "hostGone",
             player: this.nameIDDatafy(clientData),
         }
         let spg: ServerMessageGone = {
-            type: "playerGone",
+            id: "playerGone",
             player: this.nameIDDatafy(clientData),
         }
         if (clientData.host) {

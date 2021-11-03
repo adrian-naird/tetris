@@ -46,7 +46,7 @@ export class ClientField {
 
     sendKeyMessage(key: string) {
         let message: ClientMessageKeyPressed = {
-            type: "keyPressed",
+            id: "keyPressed",
             key: key
         }
         this.scene.webSocketController.send(message);

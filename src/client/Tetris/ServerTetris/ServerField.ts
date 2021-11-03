@@ -1,6 +1,6 @@
 import { Brick } from "./ServerBrick";
 import * as ws from 'ws';
-import { ServerMessageGameOver, ServerMessageNewField, ServerMessageNewLine, ServerMessageUpdateHoldBrick, ServerMessageUpdateNext } from "../../../Messages.js";
+import { ServerMessageGameOver, ServerMessageNewField, ServerMessageNewLine, ServerMessageUpdateCounter, ServerMessageUpdateHoldBrick, ServerMessageUpdateNext } from "../../../Messages.js";
 import { MainServer } from "../../../server/Server";
 import { ClientData } from "../../../server/Server";
 
@@ -78,7 +78,7 @@ export class ServerField {
     sendUpdateHoldBrickMessage(holdId: number) {
         if (this.updateBoolean) {
             let suhb: ServerMessageUpdateHoldBrick = {
-                type: "updateHoldBrick",
+                id: "updateHoldBrick",
                 holdID: holdId
             };
             this.clientData.socket.send(JSON.stringify(suhb));
@@ -92,7 +92,7 @@ export class ServerField {
     sendUpdateNextBricksMessage(array: number[]) {
         if (this.updateBoolean) {
             let smu: ServerMessageUpdateNext = {
-                type: "updateNext",
+                id: "updateNext",
                 nextBricks: array
             }
             this.clientData.socket.send(JSON.stringify(smu))
@@ -156,7 +156,7 @@ export class ServerField {
     gameOver() {
         this.gameNotOver = false;
         let snl: ServerMessageGameOver = {
-            type: "gameOver",
+            id: "gameOver",
             player: this.server.nameIDDatafy(this.clientData)
         };
         this.updateBoolean = false;
@@ -210,7 +210,7 @@ export class ServerField {
     newLineMessage(y: number) {
         if (this.fieldNumberArray[1][y] != 8 && this.fieldNumberArray[2][y] != 8 && this.updateBoolean) {
             let snl: ServerMessageNewLine = {
-                type: "newLine",
+                id: "newLine",
                 lines: this.lines
             };
             this.clientData.socket.send(JSON.stringify(snl));
@@ -299,8 +299,8 @@ export class ServerField {
 
     sendUpdateCounterMessage(lineCounter: number) {
         if (this.updateBoolean) {
-            let suc = {
-                type: "updateCounter",
+            let suc: ServerMessageUpdateCounter = {
+                id: "updateCounter",
                 lineCounter: lineCounter
             }
             this.clientData.socket.send(JSON.stringify(suc));
@@ -344,7 +344,7 @@ export class ServerField {
     sendGenerateFieldMessage(fieldArray: number[][]) {
         if (this.updateBoolean) {
             let snf: ServerMessageNewField = {
-                type: "newField",
+                id: "newField",
                 newField: fieldArray,
                 player: this.server.nameIDDatafy(this.clientData)
             };

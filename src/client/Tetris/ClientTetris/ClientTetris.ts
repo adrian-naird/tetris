@@ -95,7 +95,7 @@ export class ClientTetris extends MessageScene {
     }
 
     onMessage(serverMessage: ServerMessage) {
-        switch (serverMessage.type) {
+        switch (serverMessage.id) {
             case "newField":
                 if (this.field != undefined) {
                     switch (serverMessage.player.id) {
@@ -146,7 +146,7 @@ export class ClientTetris extends MessageScene {
                 this.field.updateNextBricks(serverMessage.nextBricks);
                 break;
             case "updateShadow":
-                this.field.updateShadowBrick(serverMessage.xC, serverMessage.yC, serverMessage.id, serverMessage.stones);
+                this.field.updateShadowBrick(serverMessage.xC, serverMessage.yC, serverMessage.stoneID, serverMessage.stones);
                 break;
             case "updateCounter":
                 this.field.updateLineCounter(serverMessage.lineCounter);
@@ -222,7 +222,7 @@ export class ClientTetris extends MessageScene {
     }
     sendEverythingRenderedMessage(){
         let message: ClientMessageEverythingRendered = {
-            type: "everythingRendered"
+            id: "everythingRendered"
         }
         this.webSocketController.send(message);
     }

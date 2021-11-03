@@ -111,7 +111,7 @@ export class LobbyScene extends MessageScene {
             if (inputText.value.length == 4 && inputText.value != this.lobbyInfo.code) {
                 if (this.isAlreadyChecked == false) {
                     let message: ClientMessageJoinFriend = {
-                        type: "joinFriend",
+                        id: "joinFriend",
                         newCode: inputText.value
                     }
                     this.webSocketController.send(message);
@@ -143,7 +143,7 @@ export class LobbyScene extends MessageScene {
      */
     onMessage(serverMessage: ServerMessage) {
 
-        switch (serverMessage.type) {
+        switch (serverMessage.id) {
             case "codeAssignment":
                 this.ownData = serverMessage.ownData;
                 this.boxes.changeCode(serverMessage.code);
@@ -221,7 +221,7 @@ export class LobbyScene extends MessageScene {
                     this.largeText.setInteractive();
                     this.largeText.on('pointerdown', function (event) {
                         let message: ClientMessageStartGame = {
-                            type: "startGame",
+                            id: "startGame",
                         }
                         this.webSocketController.send(message);
                         this.startGame()
@@ -244,7 +244,7 @@ export class LobbyScene extends MessageScene {
      */
     onWebSocketReady() {
         let message: ClientMessageNewClient = {
-            type: "newClient",
+            id: "newClient",
             name: this.name,
         }
         this.webSocketController.send(message);
