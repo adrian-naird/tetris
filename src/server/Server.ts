@@ -253,14 +253,14 @@ export class MainServer {
                 break;
             case "everythingRendered":
                 let field1 = this.socketToClientDataMap.get(messagerSocket).field;
-                if(field1!=null){
+                if (field1 != null) {
                     field1.sendUpdateCounterMessage(field1.lineCounter);
                     field1.sendUpdateNextBricksMessage(field1.nextBricksArray);
-                    if(field1.brick != null){
+                    if (field1.brick != null) {
                         field1.brick.updateShadowBrick();
                     }
                 }
-            break;
+                break;
         }
     }
 

@@ -3,7 +3,7 @@ export class Brick {
 
     public stones: boolean[][];
     stoneContainer: boolean[][];
-    public updateBoolean: boolean= true;
+    public updateBoolean: boolean = true;
     xC: number;
     yC: number;
     rlcounter: number = 0;
@@ -19,7 +19,7 @@ export class Brick {
     constructor(public field: ServerField, public id: number) {
         this.xC = 4;
         this.yC = -3;
-        
+
         switch (id) {
             case 1:
                 this.stones = [
@@ -84,13 +84,13 @@ export class Brick {
     }
 
     rKeypushed() {
-        if (this.updateBoolean&& this.field.updateBoolean) {
+        if (this.updateBoolean && this.field.updateBoolean) {
             this.brickRotation();
         }
     }
 
     fKeyPushed() {
-        if (this.updateBoolean&& this.field.updateBoolean) {
+        if (this.updateBoolean && this.field.updateBoolean) {
             this.moveDownToBottom();
         }
     }
@@ -149,7 +149,7 @@ export class Brick {
     }
 
     rotateBrick() {
-        if (this.isRotatable()&& this.field.updateBoolean) {
+        if (this.isRotatable() && this.field.updateBoolean) {
             // da this.rotateMatrix gegen den Uhrzeigersinn rotiert, lasse ich es einfach drei mal hintereinander aufrufen
             // damit es im Uhrzeigersinn rotiert. 
             for (let i = 0; i < 3; i++) {
@@ -160,6 +160,7 @@ export class Brick {
             this.updateShadowBrick();
         }
     }
+
     // see: https://www.jsmount.com/javascript-rotate-2d-matrix-90-degrees-clockwise/ 
     rotateMatrix(matrix: boolean[][]): boolean[][] {
         // Create a deep copy of 2d array first
@@ -180,16 +181,16 @@ export class Brick {
     }
 
     update() {
-        if (this.updateBoolean && this.field.updateBoolean&& !this.field.waitForAnimation) {
+        if (this.updateBoolean && this.field.updateBoolean && !this.field.waitForAnimation) {
             this.rlcounter++;
             this.rlcounter++;
             this.downCounter++;
 
-            
+
             if (this.counter + 150 < Date.now()) {
                 this.moveDown();
                 this.counter = Date.now();
-                if(!this.shadowBrickUpdated){
+                if (!this.shadowBrickUpdated) {
                     this.updateShadowBrick();
                     this.shadowBrickUpdated = true;
                 }

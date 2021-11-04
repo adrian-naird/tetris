@@ -32,7 +32,7 @@ export class LobbyScene extends MessageScene {
     webSocketReady: boolean = false;
     stopUpdating: boolean = false;
     first: boolean = true;
-    
+
     textSize: number = 1;
     scaler: boolean = true;
 
@@ -69,28 +69,28 @@ export class LobbyScene extends MessageScene {
      * Baut die Scene mit allen nötigen Elementen auf
      */
     create(): void {
-        this.nameBoxes=[];
-        this.ownCodeBoxes=[];
-        
+        this.nameBoxes = [];
+        this.ownCodeBoxes = [];
+
         for (let i = 0; i < 4; i++) {
             this.nameBoxes.push(new NameBox(this, 556, 289 + i * 128, 1186, 'lilian-webfont', "110px"));
             this.ownCodeBoxes.push(new OwnCodeBox(this, 289 + i * 128));
         }
         this.codeInputDOM = this.add.dom(359, 542).createFromCache('codeInput');
-        
+
         this.blackGaps = [
             this.add.dom(350, 412).createFromCache('BlackGap'),
             this.add.dom(350, 540).createFromCache('BlackGap'),
             this.add.dom(360, 412 + 2 * (540 - 412)).createFromCache('BlackGap')
         ]
-        
+
         this.input.setDefaultCursor('url(assets/sprites/pointer.cur), pointer');
-        
+
         this.largeText = new Phaser.GameObjects.Text(this, 1920 / 2, 890, "JOIN OR HOST A GAME", { fontFamily: 'daydream-webfont', fontSize: "72px", color: "white" }).setOrigin(0.5, 0);
         this.add.existing(this.largeText);
-        
+
         this.add.existing(new Phaser.GameObjects.Sprite(this, 234, 540, 'logovertical'));
-        
+
         if (this.nameScene) {
             this.otherPlayers = [];
             this.webSocketController = new WebSocketController(this);
@@ -103,10 +103,10 @@ export class LobbyScene extends MessageScene {
                 this.makeMember(this.lobbyInfo.code, this.otherPlayers)
             }
         }
-        
-        
+
+
     }
-    
+
     /**
      * Wird bei jedem game step aufgerufen und prüft jedes mal den Inhalt der Inputbox und skaliert den Text
      * @param time 
@@ -115,7 +115,7 @@ export class LobbyScene extends MessageScene {
     update(time: number, delta: number): void {
         if (!this.stopUpdating) {
             let inputText: any = this.codeInputDOM.getChildByName('codeInput');
-            
+
             if (inputText.value.length == 4 && inputText.value != this.lobbyInfo.code) {
                 if (this.isAlreadyChecked == false) {
                     let message: ClientMessageJoinFriend = {
@@ -219,7 +219,7 @@ export class LobbyScene extends MessageScene {
         this.updateNames();
         this.stopUpdating = true;
         this.codeInputDOM.destroy();
-        this.blackGaps.forEach((e) => e.destroy());
+        this.blackGaps.forEach(e => e.destroy());
         ["G", "A", "M", "E"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").text.setText(e));
         this.changeCode(code);
         this.largeText.setText("WAIT FOR HOST TO START")
@@ -238,7 +238,7 @@ export class LobbyScene extends MessageScene {
         }, this);
         this.stopUpdating = true;
         this.codeInputDOM.destroy();
-        this.blackGaps.forEach((e) => e.destroy());
+        this.blackGaps.forEach(e => e.destroy());
         ["H", "O", "S", "T"].forEach((e, i) => new NameBox(this, 300, 289 + i * 128, 118, 'daydream-webfont', "70px").text.setText(e));
     }
 

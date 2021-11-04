@@ -1,5 +1,5 @@
 export class NameScene extends Phaser.Scene {
-    
+
     constructor() {
         super({
             key: "NameScene"
@@ -34,7 +34,7 @@ export class NameScene extends Phaser.Scene {
         this.enter.once('down', () => {
             this.inputText = this.element.getChildByName('nameField');
             this.inputText.value;
-            this.scene.start('LobbyScene', { givingName: this.inputText.value, nameScene: true});
+            this.scene.start('LobbyScene', { givingName: this.inputText.value, nameScene: true });
         })
     }
 
@@ -53,5 +53,5 @@ export class NameScene extends Phaser.Scene {
         }
         this.logo.setScale(this.logoSize);
     }
-    
+
 }

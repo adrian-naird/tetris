@@ -1,5 +1,5 @@
 export class NameBox extends Phaser.GameObjects.Rectangle {
-    
+
     text: Phaser.GameObjects.Text
 
     /**

@@ -31,7 +31,7 @@ export class ScrollingLogos {
         this.logo3 = new Logo(scene, -452);
         this.logos.addMultiple([this.logo1, this.logo2, this.logo3]);
     }
-    
+
     update(time: number, delta: number) {
         this.logos.incY(1);
 

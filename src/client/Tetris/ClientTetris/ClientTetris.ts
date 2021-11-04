@@ -63,7 +63,7 @@ export class ClientTetris extends MessageScene {
         this.logos = new ScrollingLogos(this);
         this.largeText = new Phaser.GameObjects.Text(this, 1920 / 2, -200, "", { fontFamily: 'lilian-webfont', fontSize: "72px", color: "white" }).setOrigin(0.5, 0.5).setAlign("center").setDepth(1100);
         this.add.existing(this.largeText);
-        
+
         let message: ClientMessageEverythingRendered = {
             id: "everythingRendered"
         }
@@ -85,7 +85,7 @@ export class ClientTetris extends MessageScene {
 
         this.nextCam = this.cameras.add(1148, 198, 100, 479).setOrigin(0, 0)
         this.nextCam.ignore(this.background);
-        this.names.forEach((e, i) => this.nextCam.ignore(e));
+        this.names.forEach(e => this.nextCam.ignore(e));
     }
 
     makeRed(x: number, w: number) {
@@ -143,7 +143,7 @@ export class ClientTetris extends MessageScene {
             case "playerWon":
                 this.largeText.setText(serverMessage.player.name + " has won!")
                 this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
-                setTimeout(e => { this.children.getAll().forEach(e => e.destroy()); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
+                setTimeout(() => { this.children.getAll().forEach(e => e.destroy()); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
                 break;
             case "updateNext":
                 this.field.updateNextBricks(serverMessage.nextBricks);
