@@ -96,7 +96,11 @@ export class ClientField {
     }
 
     updateNextBricks(array: number[]) {
-        for (let i = 0; i < 3; i++) { this.nextBricks.forEach(e => e.getChildren().forEach(e => e.destroy())); }
+        // for (let i = 0; i < 3; i++) { 
+            console.log("NEXT");
+            this.nextBricks.forEach(e => e.clear(true,true));
+            this.nextBricks = [];
+        //  }
         array.forEach((brickId, index) => { this.nextBricks.push(new SmallBrick(this, brickId, -5500, index * 163, "NEXT")) })
     }
 
@@ -149,6 +153,8 @@ export class ClientField {
         this.cursors.right.off("down");
         this.cursors.down.off("up");
         this.cursors.down.off("down");
+        this.nextBricks.forEach(e => e.clear(true,true));
+        this.nextBricks = [];
     }
     destroy(pos: number) {
         this.stoneGroups[pos].clear(true, true);
