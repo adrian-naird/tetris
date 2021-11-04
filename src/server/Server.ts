@@ -47,7 +47,7 @@ export class MainServer {
     socketToClientDataMap: Map<ws, ClientData> = new Map();
 
     /**
-     * Richtet den Express-Server und die Websocket Verbindung ein
+    //Richtet den Express-Server und die Websocket Verbindung ein
      */
     constructor() {
         this.expressApp.use(serveStatic('./htdocs/'));
@@ -277,6 +277,7 @@ export class MainServer {
         let round = this.rounds.find(e => { return e.code == player.code })
         round.memberList.forEach(e => overs.push(e.field.gameNotOver));
         if (overs.every(e => !e)) {
+            //Benachrichtigung jedes Mitspielers über den Sieg
             let smn: ServerMessagePlayerWon = {
                 id: "playerWon",
                 player: this.nameIDDatafy(player)

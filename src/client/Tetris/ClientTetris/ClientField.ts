@@ -96,7 +96,8 @@ export class ClientField {
     }
 
     updateNextBricks(array: number[]) {
-        for (let i = 0; i < 3; i++) { this.nextBricks.forEach(e => e.getChildren().forEach(e => e.destroy())); }
+        this.nextBricks.forEach(e => e.getChildren().forEach(e => e.destroy())); 
+        this.nextBricks= [];
         array.forEach((brickId, index) => { this.nextBricks.push(new SmallBrick(this, brickId, -5500, index * 163, "NEXT")) })
     }
 
