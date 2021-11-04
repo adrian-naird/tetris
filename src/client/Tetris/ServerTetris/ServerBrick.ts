@@ -75,9 +75,9 @@ export class Brick {
                 break;
         }
 
-        this.updateShadowBrick();
+        // this.updateShadowBrick();
         this.field.sendUpdateNextBricksMessage(this.field.nextBricksArray);
-        this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
+        // this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
         let that = this;
 
         this.interval = setInterval(() => { this.update() }, 33.3333333)

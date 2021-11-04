@@ -150,6 +150,8 @@ export class ClientField {
         this.cursors.right.off("down");
         this.cursors.down.off("up");
         this.cursors.down.off("down");
+        this.nextBricks.forEach(e => e.clear(true,true));
+        this.nextBricks = [];
     }
     destroy(pos: number) {
         this.stoneGroups[pos].clear(true, true);
