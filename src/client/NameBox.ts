@@ -1,5 +1,7 @@
 export class NameBox extends Phaser.GameObjects.Rectangle {
+    
     text: Phaser.GameObjects.Text
+
     /**
      * Erstellt ein Text auf einem Rechteck
      * @param scene die Szene
@@ -19,4 +21,5 @@ export class NameBox extends Phaser.GameObjects.Rectangle {
         scene.add.existing(this);
         scene.add.existing(this.text);
     }
+
 }

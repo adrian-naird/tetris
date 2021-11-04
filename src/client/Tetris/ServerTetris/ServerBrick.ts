@@ -1,7 +1,6 @@
-import { DeclarationName } from "../../../../node_modules/typescript/lib/typescript.js";
 import { ServerField } from "./ServerField.js";
-import { Stone } from "../ClientTetris/Stone.js";
 export class Brick {
+
     public stones: boolean[][];
     stoneContainer: boolean[][];
     public updateBoolean: boolean= true;
@@ -16,6 +15,7 @@ export class Brick {
     down: boolean = false;
     shadowBrick: Brick;
     shadowBrickUpdated: boolean = false;
+
     constructor(public field: ServerField, public id: number) {
         this.xC = 4;
         this.yC = -3;

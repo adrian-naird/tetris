@@ -1,4 +1,3 @@
-import { ServerField } from "./client/Tetris/ServerTetris/ServerField";
 import { NameIDData } from "./server/Server.js";
 
 // die Clientnachrichten

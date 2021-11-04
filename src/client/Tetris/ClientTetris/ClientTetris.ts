@@ -1,4 +1,3 @@
-import * as e from "express";
 import { ClientMessageEverythingRendered, ServerMessage } from "../../../Messages.js";
 import { NameIDData } from "../../../server/Server.js";
 import { LobbyInfo } from "../../LobbyScene.js";
@@ -219,4 +218,5 @@ export class ClientTetris extends MessageScene {
             this.gameCams[i].scrollX = scrollX;
         }
     }
+
 }

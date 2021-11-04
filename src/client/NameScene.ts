@@ -37,6 +37,7 @@ export class NameScene extends Phaser.Scene {
             this.scene.start('LobbyScene', { givingName: this.inputText.value, nameScene: true});
         })
     }
+
     update(): void {
         if (this.logoSize <= 0.98) {
             this.scaler = true;
@@ -52,4 +53,5 @@ export class NameScene extends Phaser.Scene {
         }
         this.logo.setScale(this.logoSize);
     }
+    
 }

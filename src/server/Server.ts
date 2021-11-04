@@ -319,15 +319,10 @@ export class MainServer {
             player: this.nameIDDatafy(clientData),
         }
         if (clientData.host) {
-            // let index: number = this.rounds.indexOf(round, 0);
-            // if (index > -1) {
-            //     this.rounds.splice(index, 1);
-            // }
             goneMessage = shg;
         } else {
             goneMessage = spg;
         }
-
         this.sendToMembers(goneMessage, clientData);
         this.socketToClientDataMap.delete(clientSocket);
         round.memberList.splice(round.memberList.indexOf(clientData), 1);

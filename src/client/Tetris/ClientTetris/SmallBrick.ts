@@ -1,4 +1,3 @@
-import { MessageScene } from "../../MessageScene.js";
 import { ClientField } from "./ClientField.js";
 import { ClientTetris } from "./ClientTetris.js";
 

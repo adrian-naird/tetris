@@ -24,4 +24,4 @@ var config: Phaser.Types.Core.GameConfig = {
   }
 };
 
-var game = new Phaser.Game(config);
+new Phaser.Game(config);

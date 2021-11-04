@@ -1,5 +1,4 @@
 import { ClientMessage, ServerMessage } from "../Messages.js";
-import { LobbyScene } from "./LobbyScene.js";
 import { MessageScene } from "./MessageScene.js";
 
 export class WebSocketController {

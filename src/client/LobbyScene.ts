@@ -25,14 +25,14 @@ export class LobbyScene extends MessageScene {
     otherPlayers: NameIDData[];
     codeInputDOM: Phaser.GameObjects.DOMElement;
     blackGaps: Phaser.GameObjects.DOMElement[];
-    isAlreadyChecked: boolean = false;
     largeText: Phaser.GameObjects.Text;
-    name: string;
     webSocketController: WebSocketController;
+    name: string;
+    isAlreadyChecked: boolean = false;
     webSocketReady: boolean = false;
     stopUpdating: boolean = false;
     first: boolean = true;
-
+    
     textSize: number = 1;
     scaler: boolean = true;
 
@@ -260,4 +260,5 @@ export class LobbyScene extends MessageScene {
         this.webSocketController.send(message);
         this.webSocketReady = true;
     }
+
 }

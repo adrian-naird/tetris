@@ -1,5 +1,4 @@
 import { ClientMessageKeyPressed } from "../../../Messages.js";
-import { MessageScene } from "../../MessageScene.js";
 import { ClientTetris } from "./ClientTetris.js";
 import { SmallBrick } from "./SmallBrick.js";
 import { Stone } from "./Stone.js";
@@ -96,8 +95,8 @@ export class ClientField {
     }
 
     updateNextBricks(array: number[]) {
-        this.nextBricks.forEach(e => e.getChildren().forEach(e => e.destroy())); 
-        this.nextBricks= [];
+        this.nextBricks.forEach(e => e.clear(true, true));
+        this.nextBricks = [];
         array.forEach((brickId, index) => { this.nextBricks.push(new SmallBrick(this, brickId, -5500, index * 163, "NEXT")) })
     }
 
@@ -140,6 +139,7 @@ export class ClientField {
             this.scene.add.existing(this.counterText2);
         }
     }
+
     gameOver() {
         this.rKey.off("down");
         this.hKey.off("up");
@@ -150,9 +150,10 @@ export class ClientField {
         this.cursors.right.off("down");
         this.cursors.down.off("up");
         this.cursors.down.off("down");
-        this.nextBricks.forEach(e => e.clear(true,true));
+        this.nextBricks.forEach(e => e.clear(true, true));
         this.nextBricks = [];
     }
+
     destroy(pos: number) {
         this.stoneGroups[pos].clear(true, true);
     }

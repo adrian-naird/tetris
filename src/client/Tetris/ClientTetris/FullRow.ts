@@ -1,6 +1,5 @@
 import { ClientMessageLineDrag, ClientMessageSendLine } from "../../../Messages.js";
 import { ClientField } from "./ClientField.js";
-import { ClientTetris } from "./ClientTetris.js";
 
 export class FullRow extends Phaser.GameObjects.Rectangle {
 

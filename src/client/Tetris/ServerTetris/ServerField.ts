@@ -1,10 +1,10 @@
 import { Brick } from "./ServerBrick";
-import * as ws from 'ws';
 import { ServerMessageGameOver, ServerMessageNewField, ServerMessageNewLine, ServerMessageUpdateCounter, ServerMessageUpdateHoldBrick, ServerMessageUpdateNext } from "../../../Messages.js";
 import { MainServer } from "../../../server/Server";
 import { ClientData } from "../../../server/Server";
 
 export class ServerField {
+
     brick: Brick;
     fieldNumberArray: number[][];
     lines: number[];
@@ -38,9 +38,8 @@ export class ServerField {
             array[i] = i + 1;
         }
         this.shuffleArray(array);
-
-
     }
+
     // see: https://www.codegrepper.com/code-examples/javascript/shuffle+array+values+typescript
     shuffleArray(array: number[]) {
 
@@ -54,6 +53,7 @@ export class ServerField {
         }
         return array;
     }
+
     changeHoldBrick() {
         this.createCurrentFieldArray();
         if (!this.firstHoldBrick) {
