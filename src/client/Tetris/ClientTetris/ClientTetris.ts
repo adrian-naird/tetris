@@ -98,9 +98,9 @@ export class ClientTetris extends MessageScene {
     }
 
     onMessage(serverMessage: ServerMessage) {
-        switch (serverMessage.id) {
-            case "newField":
-                if (this.field != undefined) {
+        if (this.field != undefined) {
+            switch (serverMessage.id) {
+                case "newField":
                     switch (serverMessage.player.id) {
                         case this.ownData.id:
                             this.field.generateField(serverMessage.newField, 0);
@@ -118,42 +118,42 @@ export class ClientTetris extends MessageScene {
                             this.field.generateField(serverMessage.newField, 4);
                             break;
                     }
-                }
-                break;
-            case "updateHoldBrick":
-                this.field.updateHoldBrick(serverMessage.holdID);
-                break;
-            case "newLine":
-                this.fullrows.forEach(e => e.destroy());
-                this.fullrows = [];
-                serverMessage.lines.forEach(e => this.fullrows.push(new FullRow(this.field, e - 5)));
-                break;
-            case "gameOver":
-                this.gameOverPlayer(serverMessage.player);
-                break;
-            case "playerGone":
-                this.gameOverPlayer(serverMessage.player)
-                this.givenNames.splice(this.givenNames.findIndex(e => e == serverMessage.player), 1)
-                break;
-            case "hostGone":
-                this.largeText.setText("Host left the game")
-                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
-                this.scene.stop("ClientTetris");
-                break;
-            case "playerWon":
-                this.largeText.setText(serverMessage.player.name + " has won!")
-                this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
-                setTimeout(() => { this.children.getAll().forEach(e => e.destroy()); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
-                break;
-            case "updateNext":
-                this.field.updateNextBricks(serverMessage.nextBricks);
-                break;
-            case "updateShadow":
-                this.field.updateShadowBrick(serverMessage.xC, serverMessage.yC, serverMessage.stoneID, serverMessage.stones);
-                break;
-            case "updateCounter":
-                this.field.updateLineCounter(serverMessage.lineCounter);
-                break;
+                    break;
+                case "updateHoldBrick":
+                    this.field.updateHoldBrick(serverMessage.holdID);
+                    break;
+                case "newLine":
+                    this.fullrows.forEach(e => e.destroy());
+                    this.fullrows = [];
+                    serverMessage.lines.forEach(e => this.fullrows.push(new FullRow(this.field, e - 5)));
+                    break;
+                case "gameOver":
+                    this.gameOverPlayer(serverMessage.player);
+                    break;
+                case "playerGone":
+                    this.gameOverPlayer(serverMessage.player)
+                    this.givenNames.splice(this.givenNames.findIndex(e => e == serverMessage.player), 1)
+                    break;
+                case "hostGone":
+                    this.largeText.setText("Host left the game")
+                    this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
+                    this.scene.stop("ClientTetris");
+                    break;
+                case "playerWon":
+                    this.largeText.setText(serverMessage.player.name + " has won!")
+                    this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
+                    setTimeout(() => { this.children.getAll().forEach(e => e.destroy()); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
+                    break;
+                case "updateNext":
+                    this.field.updateNextBricks(serverMessage.nextBricks);
+                    break;
+                case "updateShadow":
+                    this.field.updateShadowBrick(serverMessage.xC, serverMessage.yC, serverMessage.stoneID, serverMessage.stones);
+                    break;
+                case "updateCounter":
+                    this.field.updateLineCounter(serverMessage.lineCounter);
+                    break;
+            }
         }
     }
 

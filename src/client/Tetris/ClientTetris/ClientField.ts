@@ -26,6 +26,7 @@ export class ClientField {
         for (let i = 0; i < 5; i++) {
             this.stoneGroups[i] = new Phaser.Physics.Arcade.Group(scene.physics.world, scene);
         }
+        this.nextBricks.forEach(e => e.clear(true, true));
         this.shadowBrick = new Phaser.Physics.Arcade.Group(scene.physics.world, scene);
         this.rKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         this.hKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);

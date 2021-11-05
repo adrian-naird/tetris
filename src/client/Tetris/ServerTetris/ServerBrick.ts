@@ -75,11 +75,6 @@ export class Brick {
                 break;
         }
 
-        // this.updateShadowBrick();
-        this.field.sendUpdateNextBricksMessage(this.field.nextBricksArray);
-        // this.field.sendGenerateFieldMessage(this.field.createCurrentFieldArray());
-        let that = this;
-
         this.interval = setInterval(() => { this.update() }, 33.3333333)
     }
 
@@ -304,17 +299,14 @@ export class Brick {
         }
         return offset + yC - 1;
     }
-    updateShadowBrick() {
-        this.sendUpdateShadowBrickMessage(this.xC, this.getShadowBrickYPosition(this.yC), this.id, this.stones);
-    }
 
-    sendUpdateShadowBrickMessage(xC: number, yC: number, id: number, stones: boolean[][]) {
+    updateShadowBrick() {
         let sus = {
-            type: "updateShadow",
-            xC: xC,
-            yC: yC,
-            id: id,
-            stones: stones
+            id: "updateShadow",
+            xC: this.xC,
+            yC: this.getShadowBrickYPosition(this.yC),
+            stoneID: this.id,
+            stones: this.stones
         }
         this.field.clientData.socket.send(JSON.stringify(sus));
     }
