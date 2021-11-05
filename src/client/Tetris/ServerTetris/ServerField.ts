@@ -31,8 +31,8 @@ export class ServerField {
         this.setStartField();
         this.createNextBricksArray(this.nextBricksArray);
         this.brick = new Brick(this, this.nextBricksArray.shift());
-        this.addLineAtBottom();
     }
+    
     createNextBricksArray(array: number[]) {
         for (let i = 0; i < 7; i++) {
             array[i] = i + 1;

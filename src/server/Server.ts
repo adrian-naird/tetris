@@ -41,13 +41,13 @@ export class MainServer {
 
     expressApp: express.Express = express();
     wsServer: ws.Server;
+
     clients: ClientData[] = [];
-    temp4PlayerList: ClientData[];
     rounds: round[] = [];
     socketToClientDataMap: Map<ws, ClientData> = new Map();
 
-    /**
-    //Richtet den Express-Server und die Websocket Verbindung ein
+    /*
+        Richtet den Express-Server und die Websocket Verbindung ein
      */
     constructor() {
         this.expressApp.use(serveStatic('./htdocs/'));
@@ -118,7 +118,7 @@ export class MainServer {
     onMessage(messagerSocket: ws, messageJson: ws.Data) {
 
         let message: ClientMessage = JSON.parse(<string>messageJson);
-        let player: ClientData = this.socketToClientDataMap.get(messagerSocket);
+        let messager: ClientData = this.socketToClientDataMap.get(messagerSocket);
 
         switch (message.id) {
             case "newClient":
@@ -146,7 +146,6 @@ export class MainServer {
 
                 break;
             case "joinFriend":
-                let JoinerData: ClientData = this.socketToClientDataMap.get(messagerSocket);
                 let newCode: number = +message.newCode;
                 let joiningRound: round = this.rounds.find(e => { return e.code == newCode });
 
@@ -163,11 +162,11 @@ export class MainServer {
                 } else {
                     let newMemberList: ClientData[] = joiningRound.memberList;
                     if (newMemberList.length < 5) {
-                        JoinerData.host = false;
+                        messager.host = false;
 
                         let sfj: ServerMessageFriendJoins = {
                             id: "friendJoins",
-                            player: this.nameIDDatafy(JoinerData)
+                            player: this.nameIDDatafy(messager)
                         };
 
 
@@ -178,11 +177,10 @@ export class MainServer {
                         };
 
                         messagerSocket.send(JSON.stringify(sjf));
-                        this.socketToClientDataMap.get(messagerSocket).host = false;
-                        newMemberList.push(JoinerData);
+                        messager.code = newCode;
+                        newMemberList.push(messager);
                         joiningRound.memberList = newMemberList
-                        JoinerData.code = newCode;
-                        this.sendToMembers(sfj, this.socketToClientDataMap.get(messagerSocket));
+                        this.sendToMembers(sfj, messager);
 
                     } else {
                         let ssf: ServerMessageNotification = {
@@ -194,8 +192,7 @@ export class MainServer {
                 break;
 
             case "startGame":
-                let starterData: ClientData = this.socketToClientDataMap.get(messagerSocket);
-                let startedCode: number = starterData.code
+                let startedCode: number = messager.code
                 let startedRound: round = this.rounds.find(e => { return e.code == startedCode })
                 startedRound.inMatch = true;
                 let memberList: ClientData[] = startedRound.memberList;
@@ -204,10 +201,10 @@ export class MainServer {
                 let shs: ServerMessageNotification = {
                     id: "hostStartsTheGame",
                 };
-                this.sendToMembers(shs, this.socketToClientDataMap.get(messagerSocket));
+                this.sendToMembers(shs, messager);
                 break;
             case "keyPressed":
-                let field = this.socketToClientDataMap.get(messagerSocket).field;
+                let field = messager.field;
                 let brick;
                 if (field != null) {
                     brick = field.brick;
@@ -245,14 +242,14 @@ export class MainServer {
                 }
                 break;
             case "lineDrag":
-                this.socketToClientDataMap.get(messagerSocket).field.remove = true;
+                messager.field.remove = true;
                 break;
             case "sendLine":
-                let id = message.player.id;
+                let id = messager.id;
                 this.clients.forEach(e => { if (e.id == id) { e.field.lineSent() } });
                 break;
             case "everythingRendered":
-                let field1 = this.socketToClientDataMap.get(messagerSocket).field;
+                let field1 = messager.field;
                 if (field1 != null) {
                     field1.sendUpdateCounterMessage(field1.lineCounter);
                     field1.sendUpdateNextBricksMessage(field1.nextBricksArray);
