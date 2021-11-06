@@ -132,21 +132,22 @@ export class ServerField {
     destroyBrick() {
         if (this.brick == null) { return }
         this.addBrickToFieldArray();
-        this.checkGameOver();
+        if(this.checkGameOver()){this.gameOver()}
         this.checkForLines();
-
         this.newBrick();
         this.updateField();
     }
 
-    checkGameOver() {
+    checkGameOver(): boolean {
         for (let x = 1; x <= 10; x++) {
             for (let y = 0; y < 4; y++) {
                 if (this.fieldNumberArray[x][y] != 0 && this.gameNotOver) {
-                    this.gameOver();
+                    // this.gameOver();
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     gameOver() {
