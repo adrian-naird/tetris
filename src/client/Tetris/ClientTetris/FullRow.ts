@@ -14,7 +14,8 @@ export class FullRow extends Phaser.GameObjects.Rectangle {
             this.setPosition(dragX + 50, dragY + 5);
             this.setScale(0.75, 0.7);
             let message: ClientMessageLineDrag = {
-                id: "lineDrag"
+                id: "lineDrag",
+                y: y
             }
             this.field.scene.webSocketController.send(message);
         });

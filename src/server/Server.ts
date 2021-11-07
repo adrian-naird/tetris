@@ -242,7 +242,8 @@ export class MainServer {
                 }
                 break;
             case "lineDrag":
-                messager.field.remove = true;
+                // messager.field.remove = true;
+                messager.field.solvedLineHasBeenMoved(message.y);
                 break;
             case "sendLine":
                 let id = messager.id;

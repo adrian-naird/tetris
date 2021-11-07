@@ -23,7 +23,8 @@ export type ClientMessageKeyPressed = {
 }
 
 export type ClientMessageLineDrag = {
-    id: "lineDrag"
+    id: "lineDrag",
+    y: number
 }
 
 export type ClientMessageSendLine = {
