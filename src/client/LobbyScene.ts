@@ -233,7 +233,7 @@ export class LobbyScene extends MessageScene {
             let message: ClientMessageStartGame = {
                 id: "startGame",
             }
-            this.webSocketController.send(message);
+            this.webSocketClient.send(message);
             this.startGame()
         }, this);
         this.stopUpdating = true;
