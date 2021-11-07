@@ -31,11 +31,8 @@ export class ServerField {
         this.server = server;
         this.clientData = clientData;
         this.lines = [];
-        // this.setStartField();
-        this.createTestField();
-        // for (let i = 0; i <10; i++) {
-        //     this.addLineAtBottom();
-        // }
+        this.setStartField();
+        
        
         this.createNextBricksArray(this.nextBricksArray);
         this.brick = new Brick(this, this.nextBricksArray.shift());
@@ -354,7 +351,8 @@ export class ServerField {
         // }
 
         this.sendUpdateLinesMessage();
-
+        this.lineCounter++
+        this.sendUpdateCounterMessage(this.lineCounter);
 
 
 
