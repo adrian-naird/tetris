@@ -246,7 +246,7 @@ export class MainServer {
                 messager.field.solvedLineHasBeenMoved(message.y);
                 break;
             case "sendLine":
-                let id = messager.id;
+                let id = message.player.id;
                 this.clients.forEach(e => { if (e.id == id) { e.field.lineSent() } });
                 break;
             case "everythingRendered":

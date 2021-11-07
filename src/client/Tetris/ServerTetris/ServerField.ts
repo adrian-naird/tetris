@@ -31,9 +31,9 @@ export class ServerField {
         this.clientData = clientData;
         this.lines = [];
         this.setStartField();
-        for (let i = 0; i <10; i++) {
-            this.addLineAtBottom();
-        }
+        // for (let i = 0; i <10; i++) {
+        //     this.addLineAtBottom();
+        // }
        
         this.createNextBricksArray(this.nextBricksArray);
         this.brick = new Brick(this, this.nextBricksArray.shift());
