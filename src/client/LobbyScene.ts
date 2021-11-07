@@ -1,6 +1,6 @@
 import { Data } from "phaser";
 import { ClientMessageJoinFriend, ClientMessageNewClient, ClientMessageStartGame, ServerMessage } from "../Messages.js";
-import { WebSocketController } from "./WebSocketController.js";
+import { WebSocketClient } from "./WebSocketClient.js";
 import { NameBox } from "./namebox.js";
 import { MessageScene } from "./MessageScene.js";
 import { NameIDData } from "../server/Server.js";
@@ -26,7 +26,7 @@ export class LobbyScene extends MessageScene {
     codeInputDOM: Phaser.GameObjects.DOMElement;
     blackGaps: Phaser.GameObjects.DOMElement[];
     largeText: Phaser.GameObjects.Text;
-    webSocketController: WebSocketController;
+    webSocketClient: WebSocketClient;
     name: string;
     isAlreadyChecked: boolean = false;
     webSocketReady: boolean = false;
@@ -51,7 +51,7 @@ export class LobbyScene extends MessageScene {
         this.nameScene = data.nameScene;
         this.lobbyInfo = data.lobbyInfo;
         this.ownData = data.ownData;
-        this.webSocketController = data.webSocketController;
+        this.webSocketClient = data.webSocketController;
     }
 
     /**
@@ -93,9 +93,9 @@ export class LobbyScene extends MessageScene {
 
         if (this.nameScene) {
             this.otherPlayers = [];
-            this.webSocketController = new WebSocketController(this);
+            this.webSocketClient = new WebSocketClient(this);
         } else {
-            this.webSocketController.scene = this;
+            this.webSocketClient.scene = this;
             this.changeCode(this.lobbyInfo.code);
             if (this.lobbyInfo.host) {
                 this.makeHost();
@@ -122,7 +122,7 @@ export class LobbyScene extends MessageScene {
                         id: "joinFriend",
                         newCode: inputText.value
                     }
-                    this.webSocketController.send(message);
+                    this.webSocketClient.send(message);
                     this.isAlreadyChecked = true;
                 }
             } else {
@@ -246,7 +246,7 @@ export class LobbyScene extends MessageScene {
      * Startet das Spiel
      */
     startGame() {
-        this.scene.start('ClientTetris', { givingNames: this.otherPlayers, webSocket: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData })
+        this.scene.start('ClientTetris', { givingNames: this.otherPlayers, webSocket: this.webSocketClient, lobbyInfo: this.lobbyInfo, ownData: this.ownData })
     }
 
     /**
@@ -257,7 +257,7 @@ export class LobbyScene extends MessageScene {
             id: "newClient",
             name: this.name,
         }
-        this.webSocketController.send(message);
+        this.webSocketClient.send(message);
         this.webSocketReady = true;
     }
 

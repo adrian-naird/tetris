@@ -1,13 +1,13 @@
 import { ClientMessage, ServerMessage } from "../Messages.js";
 import { MessageScene } from "./MessageScene.js";
 
-export class WebSocketController {
+export class WebSocketClient {
 
     connection: WebSocket;
     scene: MessageScene;
 
     /**
-     * Richtet den WebsocketController ein
+     * Richtet den WebSocket des Clients ein
      * @param lobbyScene die Szene des Clients (immer LobbyScene)
      */
     constructor(private lobbyScene: MessageScene) {

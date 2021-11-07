@@ -49,7 +49,7 @@ export class ClientField {
             id: "keyPressed",
             key: key
         }
-        this.scene.webSocketController.send(message);
+        this.scene.webSocketClient.send(message);
     }
 
     generateField(fieldArray: number[][], pos: number) {

@@ -2,7 +2,7 @@ import { ClientMessageEverythingRendered, ServerMessage } from "../../../Message
 import { NameIDData } from "../../../server/Server.js";
 import { LobbyInfo } from "../../LobbyScene.js";
 import { MessageScene } from "../../MessageScene.js";
-import { WebSocketController } from "../../WebSocketController.js";
+import { WebSocketClient } from "../../WebSocketClient.js";
 import { ClientField } from "./ClientField.js";
 import { FullRow } from "./FullRow.js";
 import { ScrollingLogos } from "./Logo.js";
@@ -17,7 +17,7 @@ export class ClientTetris extends MessageScene {
     field: ClientField;
     logoCam: Phaser.Cameras.Scene2D.Camera;
     holdCam: Phaser.Cameras.Scene2D.Camera;
-    webSocketController: WebSocketController;
+    webSocketClient: WebSocketClient;
     gameCams: Phaser.Cameras.Scene2D.Camera[] = [];
     fullrows: FullRow[] = [];
     nextCam: Phaser.Cameras.Scene2D.Camera;
@@ -35,8 +35,8 @@ export class ClientTetris extends MessageScene {
     init(data) {
         this.givenNames = data.givingNames;
         this.ownData = data.ownData;
-        this.webSocketController = data.webSocket;
-        this.webSocketController.changeScene(this);
+        this.webSocketClient = data.webSocket;
+        this.webSocketClient.changeScene(this);
         this.lobbyInfo = data.lobbyInfo
     }
 
@@ -67,7 +67,7 @@ export class ClientTetris extends MessageScene {
         let message: ClientMessageEverythingRendered = {
             id: "everythingRendered"
         }
-        this.webSocketController.send(message);
+        this.webSocketClient.send(message);
     }
 
 
@@ -142,7 +142,7 @@ export class ClientTetris extends MessageScene {
                 case "playerWon":
                     this.largeText.setText(serverMessage.player.name + " has won!")
                     this.textCam = this.cameras.add(1920 / 2 - 450, 450, 900, 200).setScroll(500, -300).ignore(this.background);
-                    setTimeout(() => { this.children.getAll().forEach(e => e.destroy()); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketController, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
+                    setTimeout(() => { this.children.getAll().forEach(e => e.destroy()); this.scene.start("LobbyScene", { givenNames: this.givenNames, NameScene: false, webSocketController: this.webSocketClient, lobbyInfo: this.lobbyInfo, ownData: this.ownData }) }, 5000)
                     break;
                 case "updateNext":
                     this.field.updateNextBricks(serverMessage.nextBricks);

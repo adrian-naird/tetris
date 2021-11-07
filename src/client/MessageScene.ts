@@ -1,8 +1,8 @@
 import { ServerMessage } from "../Messages.js";
-import { WebSocketController } from "./WebSocketController.js";
+import { WebSocketClient } from "./WebSocketClient.js";
 export abstract class MessageScene extends Phaser.Scene {
 
-    webSocketController: WebSocketController
+    webSocketClient: WebSocketClient
     abstract onMessage(serverMessage: ServerMessage);
     abstract onWebSocketReady();
 
