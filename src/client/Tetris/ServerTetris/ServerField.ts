@@ -26,11 +26,13 @@ export class ServerField {
     holdBrickAlreadyChangedOnce: boolean = false;
     greyLines: number[] = [];
     solvedLinesToRemove: number[] = [];
+    linesCheckedOnce: boolean = false;
     constructor(clientData: ClientData, server: MainServer) {
         this.server = server;
         this.clientData = clientData;
         this.lines = [];
-        this.setStartField();
+        // this.setStartField();
+        this.createTestField();
         // for (let i = 0; i <10; i++) {
         //     this.addLineAtBottom();
         // }
@@ -146,6 +148,7 @@ export class ServerField {
         if (this.checkGameOver()) { this.gameOver() }
         // this.checkForLinesOld();
         this.checkForLines();
+        // this.checkForLines();
         this.newBrick();
         this.updateField();
     }
@@ -200,6 +203,7 @@ export class ServerField {
     }
 
     newBrick() {
+        this.sendUpdateLinesMessage();
         if (this.updateBoolean) {
             setTimeout(() => {
                 // Erstellen des neuen Steins
@@ -239,6 +243,7 @@ export class ServerField {
     //     }
     // }
     checkForLines() {
+        this.lines = [];
         for (let y = 5; y <= 24; y++) {
             this.checkOneLine(y);
         }
@@ -248,13 +253,18 @@ export class ServerField {
             this.removeGivenLines(this.greyLines);
         }
         if(this.solvedLinesToRemove.length > 0){
+            // console.log(this.solvedLinesToRemove);
             this.removeGivenLines(this.solvedLinesToRemove);
-
             // Die folgenden Zeilen entfernen jedes Element welches in "solvedLinesToRemove" vorhanden ist aus this.lines
             this.lines = this.lines.filter( e => {
                 return this.solvedLinesToRemove.indexOf(e) < 0;
             });
+            this.solvedLinesToRemove = [];
         }
+        console.log(this.lines);
+        this.sendUpdateLinesMessage();
+        // this.lines = [];
+       
     }
     checkOneLine(y: number) {
         for (let x = 1; x <= 10; x++) {
@@ -294,7 +304,6 @@ export class ServerField {
             }, this.lineDestroyDelay)
         })
         // this.waitForAnimation = false;
-        
     }
 
 
@@ -338,11 +347,11 @@ export class ServerField {
                 this.greyLines.splice(i, 1);
             }
         }
-        for (let i = 0; i < this.solvedLinesToRemove.length; i++) {
-            if(this.solvedLinesToRemove[i] == fieldY){
-                this.solvedLinesToRemove.splice(i, 1);
-            }
-        }
+        // for (let i = 0; i < this.solvedLinesToRemove.length; i++) {
+        //     if(this.solvedLinesToRemove[i] == fieldY){
+        //         this.solvedLinesToRemove.splice(i, 1);
+        //     }
+        // }
 
         this.sendUpdateLinesMessage();
 
@@ -364,8 +373,11 @@ export class ServerField {
         // this.updateField();
     }
     solvedLineHasBeenMoved(y: number) {
-        this.solvedLinesToRemove.push(y);
-        this.solvedLinesToRemove.sort();
+        if(!this.solvedLinesToRemove.some(element => element == y+5)){
+            this.solvedLinesToRemove.push(y+5);
+            this.solvedLinesToRemove.sort();
+        }
+
     }
 
     sendUpdateCounterMessage(lineCounter: number) {

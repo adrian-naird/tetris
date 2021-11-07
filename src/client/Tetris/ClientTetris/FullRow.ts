@@ -3,8 +3,8 @@ import { ClientField } from "./ClientField.js";
 
 export class FullRow extends Phaser.GameObjects.Rectangle {
 
-    constructor(public field: ClientField, y: number) {
-        super(field.scene, 36 + field.serverFieldLeft - 36, y * 36 + field.serverFieldTop, 360, 36, 0xffffff);
+    constructor(public field: ClientField, yC: number) {
+        super(field.scene, 36 + field.serverFieldLeft - 36, yC * 36 + field.serverFieldTop, 360, 36, 0xffffff);
         this.setOrigin(0, 0);
         field.scene.add.existing(this);
         this.setDepth(1500);
@@ -15,7 +15,7 @@ export class FullRow extends Phaser.GameObjects.Rectangle {
             this.setScale(0.75, 0.7);
             let message: ClientMessageLineDrag = {
                 id: "lineDrag",
-                y: y
+                y: yC
             }
             this.field.scene.webSocketController.send(message);
         });
