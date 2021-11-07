@@ -22,6 +22,7 @@ export class ServerField {
     lineCounter: number = 0;
     updateBoolean: boolean = true;
     lastFreeHoleAtGreyLine: number = Math.ceil(Math.random() * 10);
+    holdBrickAlreadyChangedOnce: boolean = false;
 
     constructor(clientData: ClientData, server: MainServer) {
         this.server = server;
@@ -32,7 +33,7 @@ export class ServerField {
         this.createNextBricksArray(this.nextBricksArray);
         this.brick = new Brick(this, this.nextBricksArray.shift());
     }
-    
+
     createNextBricksArray(array: number[]) {
         for (let i = 0; i < 7; i++) {
             array[i] = i + 1;
@@ -56,19 +57,23 @@ export class ServerField {
 
     changeHoldBrick() {
         this.createCurrentFieldArray();
-        if (!this.firstHoldBrick) {
-            let newBrickId = this.holdId;
-            this.holdId = this.brick.id;
-            this.brick.destroy();
-            this.brick = new Brick(this, newBrickId);
-        } else {
-            this.holdId = this.brick.id;
-            this.brick.destroy();
-            this.brick = new Brick(this, Math.ceil(Math.random() * 7));
-            this.firstHoldBrick = false;
+        if (!this.holdBrickAlreadyChangedOnce) {
+            if (!this.firstHoldBrick) {
+                let newBrickId = this.holdId;
+                this.holdId = this.brick.id;
+                this.brick.destroy();
+                this.brick = new Brick(this, newBrickId);
+                this.holdBrickAlreadyChangedOnce = true;
+            } else {
+                this.holdId = this.brick.id;
+                this.brick.destroy();
+                this.brick = new Brick(this, Math.ceil(Math.random() * 7));
+                this.firstHoldBrick = false;
+                this.holdBrickAlreadyChangedOnce = true;
+            }
+            this.sendUpdateHoldBrickMessage(this.holdId);
+            this.brick.updateShadowBrick();
         }
-        this.sendUpdateHoldBrickMessage(this.holdId);
-        this.brick.updateShadowBrick();
     }
 
     sendUpdateHoldBrickMessage(holdId: number) {
@@ -132,7 +137,7 @@ export class ServerField {
     destroyBrick() {
         if (this.brick == null) { return }
         this.addBrickToFieldArray();
-        if(this.checkGameOver()){this.gameOver()}
+        if (this.checkGameOver()) { this.gameOver() }
         this.checkForLines();
         this.newBrick();
         this.updateField();

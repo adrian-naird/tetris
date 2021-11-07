@@ -74,7 +74,7 @@ export class Brick {
                 ]
                 break;
         }
-
+        this.field.holdBrickAlreadyChangedOnce = false;
         this.interval = setInterval(() => { this.update() }, 33.3333333)
     }
 
