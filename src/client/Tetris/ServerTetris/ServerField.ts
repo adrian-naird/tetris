@@ -23,6 +23,7 @@ export class ServerField {
     updateBoolean: boolean = true;
     lastFreeHoleAtGreyLine: number = Math.ceil(Math.random() * 10);
     holdBrickAlreadyChangedOnce: boolean = false;
+    greyLines: number[] = [];
 
     constructor(clientData: ClientData, server: MainServer) {
         this.server = server;
@@ -30,8 +31,10 @@ export class ServerField {
         this.lines = [];
 
         this.setStartField();
+       
         this.createNextBricksArray(this.nextBricksArray);
         this.brick = new Brick(this, this.nextBricksArray.shift());
+
     }
 
     createNextBricksArray(array: number[]) {
@@ -138,10 +141,12 @@ export class ServerField {
         if (this.brick == null) { return }
         this.addBrickToFieldArray();
         if (this.checkGameOver()) { this.gameOver() }
+        // this.checkForLinesOld();
         this.checkForLines();
         this.newBrick();
         this.updateField();
     }
+
 
     checkGameOver(): boolean {
         for (let x = 1; x <= 10; x++) {
@@ -161,6 +166,7 @@ export class ServerField {
             id: "gameOver",
             player: this.server.nameIDDatafy(this.clientData)
         };
+        this.nextBricksArray = [];
         this.updateBoolean = false;
         this.clientData.socket.send(JSON.stringify(snl));
         this.server.sendToMembers(snl, this.clientData);
@@ -209,43 +215,77 @@ export class ServerField {
         }
     }
 
-    newLineMessage(y: number) {
-        if (this.fieldNumberArray[1][y] != 8 && this.fieldNumberArray[2][y] != 8 && this.updateBoolean) {
+    sendUpdateLinesMessage() {
             let snl: ServerMessageNewLine = {
                 id: "newLine",
                 lines: this.lines
             };
             this.clientData.socket.send(JSON.stringify(snl));
-        }
     }
 
-    checkForLines() {
+    checkForLinesOld() {
         for (let y = 5; y <= 24; y++) {
             this.checkOneLine(y);
+        }
+        if (this.greyLines.length > 0) {
+            this.removeGreyLines(this.greyLines);
         }
         if (this.lines.length > 0 && this.remove) {
             this.destroyAnimation(this.lines);
             this.remove = false;
         }
     }
-
+    checkForLines() {
+        for (let y = 5; y <= 24; y++) {
+            this.checkOneLine(y);
+        }
+        // console.log(this.greyLines);
+        // console.log(this.fieldNumberArray);
+        if (this.greyLines.length > 0) {
+            this.removeGreyLines(this.greyLines);
+        }
+    }
     checkOneLine(y: number) {
         for (let x = 1; x <= 10; x++) {
             if (this.fieldNumberArray[x][y] == 0) { return }
 
         }
-        if (this.fieldNumberArray[1][y] == 8 || this.fieldNumberArray[2][y] == 8) {
-            this.removeSolvedLine(y);
+        if ((this.fieldNumberArray[1][y] == 8 || this.fieldNumberArray[2][y] == 8) &&
+            (!this.greyLines.some(element => element == y))) {
+            // this.removeSolvedLine(y);
+            this.greyLines.push(y);
+            this.greyLines.sort();
         }
         // Das Programm landet hier wenn eine Reihe an der Stelle y vervollständigt wurde:
-        if (!this.lines.some(element => element == y)) {
-            this.lines.push(y);
-            this.lines.sort();
+        // else if (!this.lines.some(element => element == y)) {
+        //     this.lines.push(y);
+        //     this.lines.sort();
 
-            this.newLineMessage(y);
-        }
+        //     this.newLineMessage(y);
+        // }
     }
+    removeGreyLines(lines: number[]) {
+        this.waitForAnimation = true;
+        // this.removeSolvedLine(this.greyLines[0]);
+        lines.forEach(e => {
+            this.removeLineDestroyAnimation(e);
 
+        });
+        this.lineDestroyDelay = 1000;
+        lines.forEach(e => {
+            setTimeout(() => {
+                this.waitForAnimation = false;
+                this.lineDestroyDelay = 15;
+                // die erste gelöste Reihe wird entfernt, 
+                // am Ende von removeSolvedLine wird nochmal überprüft ob es gelöste Reihen gibt.
+                this.removeSolvedLine(lines[0]);
+                // this.lineCounter++
+                // this.sendUpdateCounterMessage(this.lineCounter);
+            }, this.lineDestroyDelay)
+        })
+        // this.waitForAnimation = false;
+        
+    }
     destroyAnimation(lines: number[]) {
         this.waitForAnimation = true;
         lines.forEach(e => {
@@ -259,6 +299,8 @@ export class ServerField {
             // die erste gelöste Reihe wird entfernt, 
             // am Ende von removeSolvedLine wird nochmal überprüft ob es gelöste Reihen gibt.
             this.removeSolvedLine(this.lines[0]);
+            this.lineCounter++
+            this.sendUpdateCounterMessage(this.lineCounter);
             this.lineDestroyDelay = 1000;
         }, this.lineDestroyDelay)
     }
@@ -268,20 +310,26 @@ export class ServerField {
         for (let x = 1; x < fieldArray.length - 1; x++) {
             fieldArray[x][fieldY] = 0;
         }
-        this.sendGenerateFieldMessage(fieldArray);
+        this.updateField()
     }
 
     removeSolvedLine(fieldY: number) {
-        for (let i = this.lines.length - 1; i >= 0; --i) {
+        // for (let i = this.lines.length - 1; i >= 0; --i) {
+        for (let i = 0; i < this.lines.length; i++) {
+
             if (this.lines[i] == fieldY) {
                 this.lines.splice(i, 1);
             }
-            this.newLineMessage(fieldY);
         }
+        for (let i = 0; i < this.greyLines.length; i++) {
+            if(this.greyLines[i] == fieldY){
+                this.greyLines.splice(i, 1);
+            }
+        }
+        this.sendUpdateLinesMessage();
 
 
-        this.lineCounter++
-        this.sendUpdateCounterMessage(this.lineCounter);
+
 
 
         for (let y = fieldY; y > 0; y--) {
@@ -294,8 +342,8 @@ export class ServerField {
         for (let i = 0; i < this.fieldNumberArray.length; i++) {
             this.fieldNumberArray[i][0] = 0
         }
-
-        this.updateField();
+        this.updateField()
+        // this.updateField();
     }
 
 
@@ -324,7 +372,7 @@ export class ServerField {
         for (let x = 1; x < this.fieldNumberArray.length - 1; x++) {
             this.fieldNumberArray[x][24] = 8;
         }
-        if (Math.random() < 0.5) {
+        if (Math.random() <= 1) {
             this.fieldNumberArray[this.lastFreeHoleAtGreyLine][24] = 0;
         }
         else {
@@ -332,13 +380,13 @@ export class ServerField {
             this.fieldNumberArray[hole][24] = 0;
             this.lastFreeHoleAtGreyLine = hole;
         }
-        this.sendGenerateFieldMessage(this.fieldNumberArray);
+        this.updateField()
     }
 
     updateField() {
         if (this.updateBoolean) {
             this.sendGenerateFieldMessage(this.fieldNumberArray);
-            this.checkForLines();
+            // this.checkForLines();
         }
     }
 
@@ -369,7 +417,7 @@ export class ServerField {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 3, 2, 1, 1, 1, 1, -1],
             [0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
         ]
-        this.sendGenerateFieldMessage(this.fieldNumberArray);
+        this.updateField()
     }
 
     setStartField() {
