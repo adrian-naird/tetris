@@ -7,10 +7,11 @@ export class FullRow extends Phaser.GameObjects.Rectangle {
         super(field.scene, 36 + field.serverFieldLeft - 36, yC * 36 + field.serverFieldTop, 360, 36, 0xffffff);
         this.setOrigin(0, 0);
         field.scene.add.existing(this);
-        this.setDepth(1500);
+        this.setDepth(999);
         this.setInteractive();
-        this.field.scene.input.setDraggable(this);
+        this.field.scene.input.setDraggable(this, true);
         this.on('drag', (pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
+            console.log("drag2")
             this.setPosition(dragX + 50, dragY + 5);
             this.setScale(0.75, 0.7);
             let message: ClientMessageLineDrag = {
@@ -40,6 +41,9 @@ export class FullRow extends Phaser.GameObjects.Rectangle {
                     }
                 }
             }
+            this.field.scene.input.setDraggable(this, false);
+            this.removeAllListeners();
+            this.removeInteractive();
             this.destroy();
         })
     }

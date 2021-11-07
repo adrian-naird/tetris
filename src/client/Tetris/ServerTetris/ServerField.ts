@@ -31,8 +31,8 @@ export class ServerField {
         this.server = server;
         this.clientData = clientData;
         this.lines = [];
-        // this.setStartField();
-        this.createTestField();
+        this.setStartField();
+        // this.createTestField();
         // for (let i = 0; i <10; i++) {
         //     this.addLineAtBottom();
         // }
