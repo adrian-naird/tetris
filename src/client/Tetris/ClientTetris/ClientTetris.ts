@@ -45,6 +45,7 @@ export class ClientTetris extends MessageScene {
         this.load.image('tetrisfelder', 'assets/graphics/tetrisfelder.png');
         this.load.atlas('tetrominos', 'assets/graphics/tetrominos_sprites.png', 'assets/graphics/tetrominos.json')
     }
+    
     create(): void {
         //Hintergrund
         this.background = new Phaser.Physics.Arcade.Sprite(this, 0, 0, 'tetrisfelder').setOrigin(0, 0);
@@ -89,6 +90,11 @@ export class ClientTetris extends MessageScene {
         this.names.forEach(e => this.nextCam.ignore(e));
     }
 
+    /**
+     * Färbt die Stelle rot
+     * @param x x-Koordinate
+     * @param w Breite
+     */
     makeRed(x: number, w: number) {
         this.add.existing(new Phaser.GameObjects.Rectangle(this, x, 0, w, 2000, 0xffffff)
             .setOrigin(0, 0).setBlendMode(Phaser.BlendModes.SATURATION).setDepth(1000));
@@ -98,6 +104,10 @@ export class ClientTetris extends MessageScene {
             .setOrigin(0, 0).setBlendMode(Phaser.BlendModes.OVERLAY).setDepth(1000));
     }
 
+    /**
+     * Beantwortet die Nachrichten des Servers
+     * @param serverMessage die Nachricht des Servers
+     */
     onMessage(serverMessage: ServerMessage) {
         if (this.field != undefined) {
             switch (serverMessage.id) {
@@ -156,7 +166,10 @@ export class ClientTetris extends MessageScene {
             }
         }
     }
-
+    /**
+     * Färbt das Feld eines Spielers rot
+     * @param player der Spieler
+     */
     gameOverPlayer(player: NameIDData) {
         switch (player.id) {
             case this.ownData.id:
@@ -174,7 +187,6 @@ export class ClientTetris extends MessageScene {
             case this.givenNames[1].id:
                 this.makeRed(-3000, 375)
                 this.makeRed(345, 315)
-
                 break;
             case this.givenNames[2].id:
                 this.makeRed(-2000, 375)

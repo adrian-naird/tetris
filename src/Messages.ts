@@ -72,12 +72,6 @@ export type ServerMessageGone = {
     player: NameIDData
 }
 
-//Der Server sagt dem Client, dass eine Linie ausgefüllt wurde
-export type ServerMessageNewLine = {
-    id: "newLine",
-    lines: number[]
-}
-
 //Der Server sagt dem Client, dass er dem Freund tatsächlich beitreten kann
 export type ServerMessageJoiningFriend = {
     id: "joiningFriend",
@@ -85,17 +79,17 @@ export type ServerMessageJoiningFriend = {
     code: number
 }
 
+//Der Server sagt dem Client, dass eine Linie ausgefüllt wurde
+export type ServerMessageNewLine = {
+    id: "newLine",
+    lines: number[]
+}
+
 //Der Server gibt dem Client ein neues Feld zum anzeigen
 export type ServerMessageNewField = {
     id: "newField",
     newField: number[][],
     player: NameIDData
-}
-
-//Der Server sagt dem Client, welcher Stein jetzt im Lager ist
-export type ServerMessageUpdateHoldBrick = {
-    id: "updateHoldBrick",
-    holdID: number
 }
 
 //Der Server sagt dem Client, dass er oder ein Mitspieler verloren hat
@@ -108,6 +102,12 @@ export type ServerMessageGameOver = {
 export type ServerMessagePlayerWon = {
     id: "playerWon",
     player: NameIDData
+}
+
+//Der Server sagt dem Client, welcher Stein jetzt im Lager ist
+export type ServerMessageUpdateHoldBrick = {
+    id: "updateHoldBrick",
+    holdID: number
 }
 
 //Der Server sagt dem Client, welche Steine nun als nächstes dran sind

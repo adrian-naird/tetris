@@ -28,12 +28,14 @@ export class ClientField {
             this.stoneGroups[i] = new Phaser.Physics.Arcade.Group(scene.physics.world, scene);
         }
         this.nextBricks.forEach(e => e.clear(true, true));
+        
         this.shadowBrick = new Phaser.Physics.Arcade.Group(scene.physics.world, scene);
         this.rKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         this.hKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
         this.fKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
 
+        //Initialisierung von Listenern für die Tastendrücke
         this.rKey.on("down", () => { this.sendKeyMessage("R") })
         this.hKey.on("up", () => { this.sendKeyMessage("H") })
         this.fKey.on("up", () => { this.sendKeyMessage("F") })
