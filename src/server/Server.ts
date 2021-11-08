@@ -47,7 +47,7 @@ export class MainServer {
     clients: ClientData[] = [];
     rounds: round[] = [];
     socketToClientDataMap: Map<ws, ClientData> = new Map();
-
+    //Basiert teils auf: https://www.youtube.com/watch?v=acTb3UIKdRQ
     /*
         Richtet den Express-Server und die Websocket Verbindung ein
      */
@@ -244,7 +244,6 @@ export class MainServer {
                 }
                 break;
             case "lineDrag":
-                // messager.field.remove = true;
                 messager.field.solvedLineHasBeenMoved(message.y);
                 break;
             case "sendLine":

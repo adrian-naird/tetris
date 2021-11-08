@@ -4,7 +4,7 @@ import { MainServer } from "../../../server/Server";
 import { ClientData } from "../../../server/Server";
 
 export class ServerField {
-  
+
 
     brick: Brick;
     fieldNumberArray: number[][];
@@ -32,8 +32,8 @@ export class ServerField {
         this.clientData = clientData;
         this.lines = [];
         this.setStartField();
-        
-       
+
+
         this.createNextBricksArray(this.nextBricksArray);
         this.brick = new Brick(this, this.nextBricksArray.shift());
 
@@ -143,9 +143,7 @@ export class ServerField {
         if (this.brick == null) { return }
         this.addBrickToFieldArray();
         if (this.checkGameOver()) { this.gameOver() }
-        // this.checkForLinesOld();
         this.checkForLines();
-        // this.checkForLines();
         this.newBrick();
         this.updateField();
     }
@@ -174,7 +172,6 @@ export class ServerField {
         this.clientData.socket.send(JSON.stringify(snl));
         this.server.sendToMembers(snl, this.clientData);
         this.server.checkIfWon(this.clientData)
-        // this.brick.updateBoolean=false;
     }
 
     addBrickToFieldArray() {
@@ -220,48 +217,32 @@ export class ServerField {
     }
 
     sendUpdateLinesMessage() {
-            let snl: ServerMessageNewLine = {
-                id: "newLine",
-                lines: this.lines
-            };
-            this.clientData.socket.send(JSON.stringify(snl));
+        let snl: ServerMessageNewLine = {
+            id: "newLine",
+            lines: this.lines
+        };
+        this.clientData.socket.send(JSON.stringify(snl));
     }
 
-    // checkForLinesOld() {
-    //     for (let y = 5; y <= 24; y++) {
-    //         this.checkOneLine(y);
-    //     }
-    //     if (this.greyLines.length > 0) {
-    //         this.removeGreyLines(this.greyLines);
-    //     }
-    //     if (this.lines.length > 0 && this.remove) {
-    //         this.destroyAnimation(this.lines);
-            // this.remove = false;
-    //     }
-    // }
     checkForLines() {
         this.lines = [];
         for (let y = 5; y <= 24; y++) {
             this.checkOneLine(y);
         }
-        // console.log(this.greyLines);
-        // console.log(this.fieldNumberArray);
         if (this.greyLines.length > 0) {
             this.removeGivenLines(this.greyLines);
         }
-        if(this.solvedLinesToRemove.length > 0){
-            // console.log(this.solvedLinesToRemove);
+        if (this.solvedLinesToRemove.length > 0) {
             this.removeGivenLines(this.solvedLinesToRemove);
             // Die folgenden Zeilen entfernen jedes Element welches in "solvedLinesToRemove" vorhanden ist aus this.lines
-            this.lines = this.lines.filter( e => {
+            this.lines = this.lines.filter(e => {
                 return this.solvedLinesToRemove.indexOf(e) < 0;
             });
             this.solvedLinesToRemove = [];
         }
         console.log(this.lines);
         this.sendUpdateLinesMessage();
-        // this.lines = [];
-       
+
     }
     checkOneLine(y: number) {
         for (let x = 1; x <= 10; x++) {
@@ -270,7 +251,6 @@ export class ServerField {
         }
         if ((this.fieldNumberArray[1][y] == 8 || this.fieldNumberArray[2][y] == 8) &&
             (!this.greyLines.some(element => element == y))) {
-            // this.removeSolvedLine(y);
             this.greyLines.push(y);
             this.greyLines.sort();
         }
@@ -283,7 +263,6 @@ export class ServerField {
     }
     removeGivenLines(lines: number[]) {
         this.waitForAnimation = true;
-        // this.removeSolvedLine(this.greyLines[0]);
         lines.forEach(e => {
             this.removeLineDestroyAnimation(e);
 
@@ -296,33 +275,9 @@ export class ServerField {
                 // die erste gelöste Reihe wird entfernt, 
                 // am Ende von removeSolvedLine wird nochmal überprüft ob es gelöste Reihen gibt.
                 this.removeSolvedLine(lines[0]);
-                // this.lineCounter++
-                // this.sendUpdateCounterMessage(this.lineCounter);
             }, this.lineDestroyDelay)
         })
-        // this.waitForAnimation = false;
     }
-
-
-    // destroyAnimation(lines: number[]) {
-    //     this.waitForAnimation = true;
-    //     lines.forEach(e => {
-    //         this.removeLineDestroyAnimation(e);
-
-    //     });
-
-    //     setTimeout(() => {
-    //         this.waitForAnimation = false;
-    //         this.lineDestroyDelay = 15;
-    //         // die erste gelöste Reihe wird entfernt, 
-    //         // am Ende von removeSolvedLine wird nochmal überprüft ob es gelöste Reihen gibt.
-    //         this.removeSolvedLine(this.lines[0]);
-    //         this.lineCounter++
-    //         this.sendUpdateCounterMessage(this.lineCounter);
-    //         this.lineDestroyDelay = 1000;
-    //     }, this.lineDestroyDelay)
-    // }
-
     removeLineDestroyAnimation(fieldY: number) {
         let fieldArray = this.fieldNumberArray.slice();
         for (let x = 1; x < fieldArray.length - 1; x++) {
@@ -332,23 +287,11 @@ export class ServerField {
     }
 
     removeSolvedLine(fieldY: number) {
-        // for (let i = this.lines.length - 1; i >= 0; --i) {
-        // for (let i = 0; i < this.lines.length; i++) {
-
-        //     if (this.lines[i] == fieldY) {
-        //         this.lines.splice(i, 1);
-        //     }
-        // }
         for (let i = 0; i < this.greyLines.length; i++) {
-            if(this.greyLines[i] == fieldY){
+            if (this.greyLines[i] == fieldY) {
                 this.greyLines.splice(i, 1);
             }
         }
-        // for (let i = 0; i < this.solvedLinesToRemove.length; i++) {
-        //     if(this.solvedLinesToRemove[i] == fieldY){
-        //         this.solvedLinesToRemove.splice(i, 1);
-        //     }
-        // }
 
         this.sendUpdateLinesMessage();
         this.lineCounter++
@@ -368,11 +311,10 @@ export class ServerField {
             this.fieldNumberArray[i][0] = 0
         }
         this.updateField()
-        // this.updateField();
     }
     solvedLineHasBeenMoved(y: number) {
-        if(!this.solvedLinesToRemove.some(element => element == y+5)){
-            this.solvedLinesToRemove.push(y+5);
+        if (!this.solvedLinesToRemove.some(element => element == y + 5)) {
+            this.solvedLinesToRemove.push(y + 5);
             this.solvedLinesToRemove.sort();
         }
 
@@ -417,7 +359,6 @@ export class ServerField {
     updateField() {
         if (this.updateBoolean) {
             this.sendGenerateFieldMessage(this.fieldNumberArray);
-            // this.checkForLines();
         }
     }
 
