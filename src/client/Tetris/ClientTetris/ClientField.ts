@@ -1,3 +1,4 @@
+import { textChangeRangeIsUnchanged } from "../../../../node_modules/typescript/lib/typescript.js";
 import { ClientMessageKeyPressed } from "../../../Messages.js";
 import { ClientTetris } from "./ClientTetris.js";
 import { SmallBrick } from "./SmallBrick.js";
@@ -147,6 +148,7 @@ export class ClientField {
     }
 
     gameOver() {
+        this.scene.input.setDragState(this.scene.input.activePointer, 0);
         this.rKey.off("down");
         this.hKey.off("up");
         this.fKey.off("up");

@@ -1,6 +1,8 @@
 import { ClientMessage, ServerMessage } from "../Messages.js";
 import { MessageScene } from "./MessageScene.js";
 
+//Basiert auf: https://www.youtube.com/watch?v=acTb3UIKdRQ
+
 export class WebSocketClient {
 
     connection: WebSocket;

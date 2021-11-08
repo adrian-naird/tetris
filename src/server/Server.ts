@@ -12,6 +12,8 @@ import {
     from '../Messages';
 import { ServerField } from '../client/Tetris/ServerTetris/ServerField';
 
+//Basiert auf: https://www.youtube.com/watch?v=acTb3UIKdRQ
+
 export type ClientData = {
     //ClientData: Ein type mit allen Informationen die der Server von einem Spieler gerne wissen möchte
     socket: ws,
@@ -45,7 +47,7 @@ export class MainServer {
     clients: ClientData[] = [];
     rounds: round[] = [];
     socketToClientDataMap: Map<ws, ClientData> = new Map();
-
+    //Basiert teils auf: https://www.youtube.com/watch?v=acTb3UIKdRQ
     /*
         Richtet den Express-Server und die Websocket Verbindung ein
      */
@@ -242,12 +244,11 @@ export class MainServer {
                 }
                 break;
             case "lineDrag":
-                // messager.field.remove = true;
                 messager.field.solvedLineHasBeenMoved(message.y);
                 break;
             case "sendLine":
                 let id = message.player.id;
-                this.clients.forEach(e => { if (e.id == id) { e.field.lineSent() } });
+                this.clients.find(e => e.id == id).field.lineSent();
                 break;
             case "everythingRendered":
                 let field1 = messager.field;

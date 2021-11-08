@@ -1,5 +1,7 @@
 import { NameIDData } from "./server/Server.js";
 
+//Basiert auf: https://www.youtube.com/watch?v=acTb3UIKdRQ
+
 // die Clientnachrichten
 export type ClientMessage = ClientMessageSendLine | ClientMessageNewClient | ClientMessageLineDrag | ClientMessageJoinFriend | ClientMessageStartGame | ClientMessageKeyPressed | ClientMessageEverythingRendered;
 

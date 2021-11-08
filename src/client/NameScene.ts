@@ -18,7 +18,6 @@ export class NameScene extends Phaser.Scene {
         this.count = 0;
         this.load.image('logo', 'assets/sprites/logo.png');
         this.load.image('pointer', 'assets/sprites/pointer.cur');
-        this.load.image('typer', 'assets/sprites/typer.cur');
         this.load.html('nameform', 'assets/text/nameform.html');
         this.load.css('main', 'css/main.css');
         this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -26,9 +25,6 @@ export class NameScene extends Phaser.Scene {
     create(): void {
         this.element = this.add.dom(1920 / 2, 804).createFromCache('nameform');
         this.input.setDefaultCursor('url(assets/sprites/pointer.cur), pointer');
-        this.element.setInteractive({
-            cursor: 'typer'
-        })
         this.logo = new Phaser.GameObjects.Sprite(this, 1000, 422, 'logo');
         this.add.existing(this.logo);
         this.enter.once('down', () => {
