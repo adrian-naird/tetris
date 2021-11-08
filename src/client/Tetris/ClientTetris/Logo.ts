@@ -4,8 +4,6 @@ export class Logo extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0, 0)
         this.setDepth(700);
         scene.add.existing(this);
-        //722,318
-        //672,318
     }
 }
 

@@ -104,7 +104,11 @@ export class ServerField {
             this.clientData.socket.send(JSON.stringify(smu))
         }
     }
-
+    /**
+     * Die Methode kopiert das aktuelle fieldNumberArray 
+     * und fügt den Brick an seiner aktuellen Position ein.
+     * @returns das Array mit dem integrierten Brick
+     */
     createCurrentFieldArray(): number[][] {
         let fieldX: number;
         let fieldY: number;
@@ -150,7 +154,10 @@ export class ServerField {
         this.updateField();
     }
 
-
+    /**
+     * Die Methode überprüft ob ein Stein oberhalb aus dem Spielfeld ragt
+     * @returns true, wenn ein Stein aus dem Spielfeld ragt, false wenn nicht
+     */
     checkGameOver(): boolean {
         for (let x = 1; x <= 10; x++) {
             for (let y = 0; y < 4; y++) {
@@ -176,9 +183,10 @@ export class ServerField {
         this.server.checkIfWon(this.clientData)
         // this.brick.updateBoolean=false;
     }
-
+    /**
+     * Die Methode trägt den Brick in das fieldNumberArray ein
+     */
     addBrickToFieldArray() {
-        // Eintragen des alten Steins ins FieldArray
         let fieldX: number;
         let fieldY: number;
 
@@ -198,12 +206,15 @@ export class ServerField {
         }
         this.brick.destroy();
     }
-
+    /**
+     * Die Methode erstellt den nächsten Brick.
+     * Außerdem wird an dieser Stelle das nextBricksArray erweitert
+     * und eine graue Reihe hinzugefügt, falls lineHasBeenSent den Wert true hat.
+     */
     newBrick() {
         this.sendUpdateLinesMessage();
         if (this.updateBoolean) {
             setTimeout(() => {
-                // Erstellen des neuen Steins
                 if (this.lineHasBeenSent) {
                     this.addLineAtBottom();
                     this.lineHasBeenSent = false;
@@ -239,30 +250,37 @@ export class ServerField {
             // this.remove = false;
     //     }
     // }
+    /**
+     * Die Methode überprüft ob es aktuell gefüllte Reihen gibt,
+     * und entfernt oder speichert sie in this.lines
+     */
     checkForLines() {
         this.lines = [];
         for (let y = 5; y <= 24; y++) {
             this.checkOneLine(y);
         }
-        // console.log(this.greyLines);
-        // console.log(this.fieldNumberArray);
+      
         if (this.greyLines.length > 0) {
             this.removeGivenLines(this.greyLines);
         }
         if(this.solvedLinesToRemove.length > 0){
-            // console.log(this.solvedLinesToRemove);
             this.removeGivenLines(this.solvedLinesToRemove);
-            // Die folgenden Zeilen entfernen jedes Element welches in "solvedLinesToRemove" vorhanden ist aus this.lines
+            // Die folgenden Zeilen entfernen jedes Element welches in "solvedLinesToRemove"
+            // vorhanden ist aus this.lines
             this.lines = this.lines.filter( e => {
                 return this.solvedLinesToRemove.indexOf(e) < 0;
             });
             this.solvedLinesToRemove = [];
         }
         console.log(this.lines);
-        this.sendUpdateLinesMessage();
-        // this.lines = [];
-       
+        this.sendUpdateLinesMessage();       
     }
+    /**
+     * Die Methode überprüft ob an der übergebenen y-Koordinate 
+     * eine gefüllte Reihe existiert, ist dies der Fall, speichert
+     * sie diese Information in this.greyLines oder in this.lines
+     * @param y die zu überprüfende y-Koordinate
+     */
     checkOneLine(y: number) {
         for (let x = 1; x <= 10; x++) {
             if (this.fieldNumberArray[x][y] == 0) { return }
@@ -281,6 +299,10 @@ export class ServerField {
             this.sendUpdateLinesMessage();
         }
     }
+    /**
+     * Die Methode entfernt die übergebenen Reihen
+     * @param lines Ein Array welche die y-Koordinaten der zu entfernenden Reihen beinhält
+     */
     removeGivenLines(lines: number[]) {
         this.waitForAnimation = true;
         // this.removeSolvedLine(this.greyLines[0]);
@@ -322,7 +344,11 @@ export class ServerField {
     //         this.lineDestroyDelay = 1000;
     //     }, this.lineDestroyDelay)
     // }
-
+    /**
+     * Die Methode füllt das fieldNumberArray an der 
+     * übergebenen y-Koordinate mit dem Wert 0
+     * @param fieldY die y-Koordinate der Reihe
+     */
     removeLineDestroyAnimation(fieldY: number) {
         let fieldArray = this.fieldNumberArray.slice();
         for (let x = 1; x < fieldArray.length - 1; x++) {
@@ -330,25 +356,18 @@ export class ServerField {
         }
         this.updateField()
     }
-
+    /**
+     * Die Methode entfernt die übergebene Reihe aus den Arrays,
+     * und verändert das fieldNumberArray. Jede Reihe oberhalb 
+     * der übergebenen y-Koordinate wird um eins nach unten verschoben
+     * @param fieldY die y-Koordinate der zu entfernenden Reihe
+     */
     removeSolvedLine(fieldY: number) {
-        // for (let i = this.lines.length - 1; i >= 0; --i) {
-        // for (let i = 0; i < this.lines.length; i++) {
-
-        //     if (this.lines[i] == fieldY) {
-        //         this.lines.splice(i, 1);
-        //     }
-        // }
         for (let i = 0; i < this.greyLines.length; i++) {
             if(this.greyLines[i] == fieldY){
                 this.greyLines.splice(i, 1);
             }
         }
-        // for (let i = 0; i < this.solvedLinesToRemove.length; i++) {
-        //     if(this.solvedLinesToRemove[i] == fieldY){
-        //         this.solvedLinesToRemove.splice(i, 1);
-        //     }
-        // }
 
         this.sendUpdateLinesMessage();
         this.lineCounter++
@@ -368,7 +387,6 @@ export class ServerField {
             this.fieldNumberArray[i][0] = 0
         }
         this.updateField()
-        // this.updateField();
     }
     solvedLineHasBeenMoved(y: number) {
         if(!this.solvedLinesToRemove.some(element => element == y+5)){
@@ -393,7 +411,11 @@ export class ServerField {
     lineSent() {
         this.lineHasBeenSent = true;
     }
-
+    /**
+     * Die Methode fügt eine graue Reihe mit einer Lücke
+     * am unteren Ende des Spielfelds hinzu, und verschiebt
+     * die restlichen Werte im fieldNumberArray um eins nach oben.
+     */
     addLineAtBottom() {
         for (let y = 0; y < 24; y++) {
             for (let x = 1; x < this.fieldNumberArray.length - 1; x++) {
@@ -432,7 +454,12 @@ export class ServerField {
             this.server.sendToMembers(snf, this.clientData);
         }
     }
-
+    /**
+     * Diese Methode war lediglich da um Funktionen zu testen,
+     * Mithilfe dieser Methode konnte ich gleich im Konstruktor
+     * ein Spielfeld erstellen mit welcher ich zum Beispiel sofort
+     * das Lösen von Reihen testen konnte
+     */
     createTestField() {
         this.fieldNumberArray = [
             [0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -450,7 +477,11 @@ export class ServerField {
         ]
         this.updateField()
     }
-
+    /**
+     * Diese Methode erstellt das fieldNumberArray so wie es zu 
+     * Beginn des Spiels auszusehen hat. 
+     * (-1 an den Spielrändern, und den Rest mit 0 gefüllt)
+     */
     setStartField() {
         this.fieldNumberArray = [];
         for (let x = 0; x <= 11; x++) {

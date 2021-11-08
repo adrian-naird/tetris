@@ -31,7 +31,6 @@ export class SmallBrick extends Phaser.Physics.Arcade.Group {
                     [false, true, true, false],
                     [false, false, false, false],
                 ];
-                // camera.setZoom(0.75);
                 this.left = left + 15;
                 this.top = top + 20
                 break;
@@ -60,7 +59,6 @@ export class SmallBrick extends Phaser.Physics.Arcade.Group {
                     [false, false, false, false],
                     [false, false, false, false]
                 ];
-                // camera.setZoom(0.5);
                 this.left = left + 30;
                 this.top = top + 20
                 break;
@@ -94,7 +92,7 @@ export class SmallBrick extends Phaser.Physics.Arcade.Group {
         }
         this.generateBrick(this.stones, this.left, this.top);
     }
-
+    
     generateBrick(stones: boolean[][], left: number, top: number) {
         super.clear(true, true);
         for (let x = 0; x < stones.length; x++) {
@@ -102,7 +100,6 @@ export class SmallBrick extends Phaser.Physics.Arcade.Group {
                 if (stones[x][y]) {
                     let stone = new Phaser.Physics.Arcade.Sprite(this.field.scene, (x * 36) + left, (y * 36) + top, 'tetrominos', 'Tetromino_' + this.id.toString()).setDepth(800);
                     (<ClientTetris>this.field.scene).gameCams[4].ignore(stone);
-                    // (<ClientTetris>this.field.scene).cameras.main.ignore(stone);
                     this.add(stone);
                     this.field.scene.add.existing(stone);
                 }

@@ -89,7 +89,13 @@ export class Brick {
             this.moveDownToBottom();
         }
     }
-
+    /**
+     * Die Methode überprüft ob die Bewegung an die Koordinaten xC/yC
+     * zu Überschneidungen mit dem restlichen Feld führen würde.
+     * @param xC Die zu überprüfende x-Koordinate
+     * @param yC Die zu überprüfende y-Koordinate
+     * @returns true, wenn die zu überprüfende Bewegung valide ist, false wenn nicht
+     */
     isValidMove(xC: number, yC: number): boolean {
         for (let y = 0; y < this.stones.length; y++) {
             for (let x = 0; x < this.stones.length; x++) {
@@ -101,8 +107,12 @@ export class Brick {
         return true;
     }
 
-
-    isRotatable() {
+    /**
+     * Die Methode überprüft ob eine Rotation zu Überschneidungen 
+     * mit dem restlichen Feld führen würde.
+     * @returns true, wenn der Brick rotiert werden kann, false wenn nicht
+     */
+    isRotatable():boolean {
         let testArray = this.rotateMatrix(this.stones);
 
         for (let y = 0; y < this.stones.length; y++) {
@@ -219,7 +229,11 @@ export class Brick {
             this.moveDown();
         }
     }
-
+    /**
+     * Die Methode versucht möglichst eine Rotation des Steins auszuführen,
+     * auch wenn dies durch eine Wand eigentlich nicht möglich sein sollte.
+     * In diesem Fall wird der Stein ein Stück von der Wand wegbewegt und dann rotiert.
+     */
     brickRotation() {
         if (this.id == 4) {
             // Wenn Stein Nr.4 ungünstig gedreht ist, und links an der Wand ist,
@@ -292,6 +306,11 @@ export class Brick {
             }
         }
     }
+    /**
+     * Die Methode berechnet die yC-Koordinate für den ShadowBrick
+     * @param yC die aktuelle yC-Koordinate des Bricks
+     * @returns die yC-Koordinate an welche der ShadowBrick generiert werden soll
+     */
     getShadowBrickYPosition(yC: number): number {
         let offset = 0;
         while (this.isValidMove(this.xC, yC + offset)) {

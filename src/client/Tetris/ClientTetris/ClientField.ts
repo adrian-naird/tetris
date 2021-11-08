@@ -51,7 +51,12 @@ export class ClientField {
         }
         this.scene.webSocketClient.send(message);
     }
-
+    /**
+     * Die Methode generiert das übergebene fieldNumberArray an die Position pos
+     * @param fieldArray das zu generierende fieldNumberArray
+     * @param pos die Position an welche das Feld generiert werden soll.
+     * (0 für das mittlere Spielfeld, 1-4 für die GegnerFelder von links nach rechts)
+     */
     generateField(fieldArray: number[][], pos: number) {
         if (!this.CamSet) {
             this.Camera = (<ClientTetris>this.scene).gameCams[pos];

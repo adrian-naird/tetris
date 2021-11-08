@@ -192,7 +192,7 @@ export class ClientTetris extends MessageScene {
 
     setGameCams() {
         // damit dieses Array mit den Positionen in generateField übereinstimmt, wird die 0te stelle leer gelassen
-        //  da man für das Mittlere Array keine Cam braucht
+        //  da man für das Mittlere Feld keine Cam braucht
         for (let i = 1; i < 5; i++) {
             let xOffset;
             let scrollX;
