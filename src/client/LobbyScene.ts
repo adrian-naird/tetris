@@ -115,7 +115,7 @@ export class LobbyScene extends MessageScene {
     update(time: number, delta: number): void {
         if (!this.stopUpdating) {
             let inputText: any = this.codeInputDOM.getChildByName('codeInput');
-
+            //Versendung des eingegeben Codes
             if (inputText.value.length == 4 && inputText.value != this.lobbyInfo.code) {
                 if (this.isAlreadyChecked == false) {
                     let message: ClientMessageJoinFriend = {
@@ -129,7 +129,7 @@ export class LobbyScene extends MessageScene {
                 this.isAlreadyChecked = false;
             }
         }
-
+        //Animation des Texts
         if (this.textSize <= 0.98) {
             this.scaler = true;
         } else {

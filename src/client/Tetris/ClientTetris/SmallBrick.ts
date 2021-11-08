@@ -92,7 +92,7 @@ export class SmallBrick extends Phaser.Physics.Arcade.Group {
         }
         this.generateBrick(this.stones, this.left, this.top);
     }
-    
+
     generateBrick(stones: boolean[][], left: number, top: number) {
         super.clear(true, true);
         for (let x = 0; x < stones.length; x++) {

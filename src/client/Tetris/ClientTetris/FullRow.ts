@@ -11,7 +11,6 @@ export class FullRow extends Phaser.GameObjects.Rectangle {
         this.setInteractive();
         this.field.scene.input.setDraggable(this, true);
         this.on('drag', (pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
-            console.log("drag2")
             this.setPosition(dragX + 50, dragY + 5);
             this.setScale(0.75, 0.7);
             let message: ClientMessageLineDrag = {
@@ -23,20 +22,15 @@ export class FullRow extends Phaser.GameObjects.Rectangle {
         this.on('dragend', (pointer: Phaser.Input.Pointer) => {
             if (200 < pointer.y && pointer.y < (200 + 700)) {
                 if (900 < pointer.x && pointer.x < (900 + 350)) {
-                    console.log("0")
                     this.sendMessage(0)
                 } else if (294 < pointer.y && pointer.y < (294 + 540)) {
                     if (40 < pointer.x && pointer.x < (40 + 270)) {
-                        console.log("1")
                         this.sendMessage(1)
                     } else if (355 < pointer.x && pointer.x < (355 + 270)) {
-                        console.log("2")
                         this.sendMessage(2)
                     } else if (1295 < pointer.x && pointer.x < (1295 + 270)) {
-                        console.log("3")
                         this.sendMessage(3)
                     } else if (1610 < pointer.x && pointer.x < (1610 + 270)) {
-                        console.log("4")
                         this.sendMessage(4)
                     }
                 }

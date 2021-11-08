@@ -112,7 +112,7 @@ export class Brick {
      * mit dem restlichen Feld führen würde.
      * @returns true, wenn der Brick rotiert werden kann, false wenn nicht
      */
-    isRotatable():boolean {
+    isRotatable(): boolean {
         let testArray = this.rotateMatrix(this.stones);
 
         for (let y = 0; y < this.stones.length; y++) {

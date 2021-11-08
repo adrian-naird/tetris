@@ -27,6 +27,8 @@ export class NameScene extends Phaser.Scene {
         this.input.setDefaultCursor('url(assets/sprites/pointer.cur), pointer');
         this.logo = new Phaser.GameObjects.Sprite(this, 1000, 422, 'logo');
         this.add.existing(this.logo);
+
+        //Überprüft bei Enterdruck was eingegeben wurde, und übergibt das der LobbyScene
         this.enter.once('down', () => {
             this.inputText = this.element.getChildByName('nameField');
             this.inputText.value;
@@ -35,6 +37,7 @@ export class NameScene extends Phaser.Scene {
     }
 
     update(): void {
+        //Animation des Logos
         if (this.logoSize <= 0.98) {
             this.scaler = true;
         } else {

@@ -124,7 +124,7 @@ export class MainServer {
 
         switch (message.id) {
             case "newClient":
-                //Erstelle dem neuen Client eine ClientData, und setz in richtig ins System ein. Code generieren, einsetzen in die Maps, usw.
+                //Erstellt dem neuen Client eine ClientData, und setz in richtig ins System ein. Code generieren, einsetzen in die Maps, usw.
                 let newClientCode = this.generateCode();
                 let newClientData: ClientData = {
                     socket: messagerSocket,
@@ -138,6 +138,7 @@ export class MainServer {
                 this.socketToClientDataMap.set(messagerSocket, newClientData);
                 let ownMatch: ClientData[] = [newClientData];
                 this.rounds.push({ code: newClientCode, memberList: ownMatch, inMatch: false });
+                //Mitteilung des Codes seiner Runde
                 let sca: ServerMessageCodeAssignment = {
                     id: "codeAssignment",
                     ownData: this.nameIDDatafy(newClientData),
@@ -151,11 +152,13 @@ export class MainServer {
                 let newCode: number = +message.newCode;
                 let joiningRound: round = this.rounds.find(e => { return e.code == newCode });
 
+                //Überprüfung ob der Code überhaupt einer Runde gehört
                 if (!this.rounds.some(e => e.code == newCode)) {
                     let sce: ServerMessageNotification = {
                         id: "codeError"
                     }
                     messagerSocket.send(JSON.stringify(sce));
+                    //Überprüfung ob das Spiel bereits losgeht
                 } else if (joiningRound.inMatch) {
                     let sce: ServerMessageNotification = {
                         id: "gameRunning"
@@ -163,9 +166,11 @@ export class MainServer {
                     messagerSocket.send(JSON.stringify(sce));
                 } else {
                     let newMemberList: ClientData[] = joiningRound.memberList;
+                    //Überprüfung, ob die Runde bereits voll ist
                     if (newMemberList.length < 5) {
                         messager.host = false;
 
+                        //Mitteilung aller relevanten Clients, dass nun der Runde beigetreten wird.
                         let sfj: ServerMessageFriendJoins = {
                             id: "friendJoins",
                             player: this.nameIDDatafy(messager)
@@ -194,6 +199,7 @@ export class MainServer {
                 break;
 
             case "startGame":
+                //Startet das Tetris-Spiel für alle Mitglieder der Runde
                 let startedCode: number = messager.code
                 let startedRound: round = this.rounds.find(e => { return e.code == startedCode })
                 startedRound.inMatch = true;
@@ -206,6 +212,7 @@ export class MainServer {
                 this.sendToMembers(shs, messager);
                 break;
             case "keyPressed":
+                //Übergibt dem ServerField des Spielers jeden Tastendruck
                 let field = messager.field;
                 let brick;
                 if (field != null) {

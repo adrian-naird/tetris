@@ -49,16 +49,16 @@ export class ClientTetris extends MessageScene {
         //Hintergrund
         this.background = new Phaser.Physics.Arcade.Sprite(this, 0, 0, 'tetrisfelder').setOrigin(0, 0);
         this.add.existing(this.background);
-        console.log(this.input.activePointer)
-        console.log(this.input.getDragState(this.input.activePointer))
         this.input.setDragState(this.input.activePointer, 1);
         let textStyle: Phaser.Types.GameObjects.Text.TextStyle = { fontFamily: 'lilian-webfont', fontSize: "40px", color: "white" };
+
         this.names = [
             this.add.text(175, 240, "", textStyle).setOrigin(0.5, 0),
             this.add.text(490, 240, "", textStyle).setOrigin(0.5, 0),
             this.add.text(1430, 240, "", textStyle).setOrigin(0.5, 0),
             this.add.text(1745, 240, "", textStyle).setOrigin(0.5, 0)
         ];
+
         this.camManagement();
         this.field = new ClientField(this);
         this.givenNames.forEach((e, i) => this.names[i].setText(e.name));
